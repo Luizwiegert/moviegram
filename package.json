@@ -1,0 +1,22 @@
+{
+  "name": "moviegram",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "posters": "node scripts/fetch-posters.mjs",
+    "demo": "vite --mode demo --port 5180 --strictPort",
+    "avatares": "node scripts/avatares.mjs"
+  },
+  "devDependencies": {
+    "sharp": "^0.35.4",
+    "typescript": "~6.0.2",
+    "vite": "^8.3.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.117.1"
+  }
+}

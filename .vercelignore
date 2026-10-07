@@ -1,0 +1,12 @@
+# Nunca sobe pro servidor
+.env
+.env.*
+!.env.example
+# Não precisa pro site no ar
+avatares
+prototipo
+marca
+dist
+node_modules
+.claude
+videos

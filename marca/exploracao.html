@@ -1,0 +1,197 @@
+<title>Marca Moviegram</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wdth,wght@62..125,100..900&family=Big+Shoulders+Display:wght@700;900&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Unbounded:wght@300..900&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+/* Tema único escuro, como o próprio app: sala de cinema. */
+:root{
+  color-scheme:dark;
+  --bg:#0A0A0B; --surface:#131315; --raised:#1B1B1E; --line:rgba(255,255,255,.08); --line-2:rgba(255,255,255,.16);
+  --ink:#F2F1EE; --muted:rgba(242,241,238,.62); --faint:rgba(242,241,238,.4);
+  --accent:#E8B04B; --on-accent:#1A1204;
+  --wm:"Big Shoulders Display"; --wm-w:900; --wm-wdth:100; --wm-style:normal; --wm-track:0; --wm-case:uppercase;
+  --body:"Archivo",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 var(--body);margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:clamp(16px,4vw,48px);padding-block:48px 96px}
+h1{font:800 clamp(40px,6vw,72px)/.95 var(--body);font-stretch:62%;text-transform:uppercase;margin:0}
+.lead{color:var(--muted);max-width:60ch;margin:16px 0 0;font-size:16px}
+
+.controls{position:sticky;top:0;z-index:5;background:rgba(10,10,11,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);margin:40px calc(-1 * clamp(16px,4vw,48px)) 0;padding:16px clamp(16px,4vw,48px);display:grid;gap:14px}
+.ctl{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px}
+.ctl>span{font-size:13px;color:var(--muted);min-width:64px}
+.opt{border:1px solid var(--line-2);background:var(--surface);color:var(--ink);border-radius:6px;padding:8px 12px;font:inherit;font-size:14px;cursor:pointer;line-height:1}
+.opt:hover{border-color:var(--muted)}
+.opt[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.sw{width:30px;height:30px;border-radius:50%;border:0;background:var(--c);cursor:pointer;box-shadow:0 0 0 2px var(--bg)}
+.sw[aria-pressed="true"]{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--ink)}
+:focus-visible{outline:2px solid #8AB4FF;outline-offset:2px}
+
+section{margin-top:72px}
+h2{font:700 13px/1 var(--body);color:var(--muted);margin:0 0 20px;letter-spacing:.02em}
+.fonts{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.font{background:var(--bg);padding:28px 24px;text-align:left;border:0;color:var(--ink);cursor:pointer;display:grid;gap:14px}
+.font:hover{background:var(--surface)}
+.font[aria-pressed="true"]{background:var(--raised);box-shadow:inset 0 0 0 1px var(--accent)}
+.font .name{font-size:13px;color:var(--muted)}
+.font .wm{font-size:52px;line-height:.95;overflow-wrap:anywhere}
+.font .note{font-size:13.5px;color:var(--muted);max-width:40ch}
+
+.wm{font-family:var(--wm);font-weight:var(--wm-w);font-stretch:calc(var(--wm-wdth) * 1%);font-style:var(--wm-style);letter-spacing:var(--wm-track);text-transform:var(--wm-case)}
+.wm .g{color:var(--accent)}
+
+.concepts{display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
+.concept{background:var(--bg);display:grid;grid-template-columns:minmax(0,1fr) 120px 200px;gap:32px;align-items:center;padding:36px 28px}
+@media (max-width:860px){.concept{grid-template-columns:1fr 1fr}.concept .lockup{grid-column:1/-1}}
+.concept h3{font:700 15px/1.3 var(--body);margin:0 0 6px}
+.concept p{margin:0;color:var(--muted);font-size:14px;max-width:46ch}
+.lockup{display:flex;align-items:center;gap:14px;margin-top:22px;min-width:0}
+.lockup svg{height:40px;width:auto;flex:none}
+.lockup .wm{font-size:40px;line-height:1;white-space:nowrap}
+.icon{width:96px;height:96px;border-radius:22px;background:var(--raised);display:grid;place-items:center;box-shadow:inset 0 0 0 1px var(--line)}
+.icon svg{width:58px;height:58px}
+.sizes{display:flex;align-items:flex-end;gap:18px}
+.fav{display:grid;justify-items:center;gap:6px;font-size:11.5px;color:var(--faint)}
+.fav div{background:var(--raised);border-radius:6px;display:grid;place-items:center}
+.fav .s32{width:32px;height:32px}.fav .s32 svg{width:22px;height:22px}
+.fav .s20{width:20px;height:20px;border-radius:4px}.fav .s20 svg{width:14px;height:14px}
+
+.preview{margin-top:18px;border:1px solid var(--line);background:var(--surface)}
+.pv-bar{display:flex;align-items:center;gap:28px;padding:16px 24px;border-bottom:1px solid var(--line)}
+.pv-bar .wm{font-size:28px;line-height:1}
+.pv-bar nav{display:flex;gap:22px;font-size:14px;color:var(--muted)}
+.pv-bar nav b{color:var(--ink);font-weight:600}
+.pv-body{padding:40px 24px 44px;display:grid;grid-template-columns:auto 1fr;gap:12px 40px;align-items:end}
+@media (max-width:700px){.pv-body{grid-template-columns:1fr}}
+.pv-count{font-family:var(--wm);font-weight:var(--wm-w);font-stretch:calc(var(--wm-wdth) * 1%);font-style:var(--wm-style);font-size:clamp(96px,14vw,168px);line-height:.8;color:var(--accent);font-variant-numeric:tabular-nums}
+.pv-count small{display:block;font:400 14px/1.4 var(--body);color:var(--muted);margin-top:14px}
+.pv-body p{margin:0;color:var(--muted);max-width:44ch}
+.pv-body h4{font:700 22px/1.2 var(--body);margin:0 0 6px;color:var(--ink)}
+
+.pick{margin-top:40px;padding:20px 24px;border:1px solid var(--line-2);display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;font-size:15px}
+.pick b{color:var(--accent);font-weight:600}
+.copy{margin-left:auto}
+@media (prefers-reduced-motion:no-preference){.font,.opt{transition:background .15s,border-color .15s,color .15s}}
+</style>
+
+<div class="wrap">
+  <h1>Marca Moviegram</h1>
+  <p class="lead">Escolha a fonte do nome, o símbolo e a cor de destaque. Tudo aqui é desenhado em código: o mesmo símbolo aparece igual no ícone do celular, na aba do navegador e no topo do site.</p>
+
+  <div class="controls" role="group" aria-label="Escolhas">
+    <div class="ctl"><span>Cor</span>
+      <button class="sw" style="--c:#E8B04B" data-accent="#E8B04B" data-on="#1A1204" data-name="Âmbar de letreiro" aria-label="Âmbar de letreiro" aria-pressed="true"></button>
+      <button class="sw" style="--c:#E5484D" data-accent="#E5484D" data-on="#FFFFFF" data-name="Vermelho de cortina" aria-label="Vermelho de cortina" aria-pressed="false"></button>
+      <button class="sw" style="--c:#F2F1EE" data-accent="#F2F1EE" data-on="#0A0A0B" data-name="Branco de tela" aria-label="Branco de tela" aria-pressed="false"></button>
+      <button class="sw" style="--c:#3FBF80" data-accent="#3FBF80" data-on="#04110A" data-name="Verde Doom" aria-label="Verde Doom" aria-pressed="false"></button>
+    </div>
+    <div class="ctl"><span>Letras</span>
+      <button class="opt" data-case="uppercase" aria-pressed="true">MAIÚSCULAS</button>
+      <button class="opt" data-case="none" aria-pressed="false">Moviegram</button>
+      <button class="opt" data-case="lowercase" aria-pressed="false">minúsculas</button>
+    </div>
+  </div>
+
+  <section>
+    <h2>1. Fonte do nome</h2>
+    <div class="fonts" id="fonts"></div>
+  </section>
+
+  <section>
+    <h2>2. Símbolo</h2>
+    <div class="concepts" id="concepts"></div>
+  </section>
+
+  <section>
+    <h2>3. Como fica no site</h2>
+    <div class="preview">
+      <div class="pv-bar"><span class="wm" id="pv-wm"></span><nav><b>Linha do tempo</b><span>Ranking</span><span>Perfil</span></nav></div>
+      <div class="pv-body">
+        <div class="pv-count">84<small>dias até Vingadores: Doomsday</small></div>
+        <div><h4>Continue de onde parou</h4><p>Capitão América: O Primeiro Vingador. O primeiro da ordem cronológica, e um dos essenciais pra chegar pronto na estreia.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="pick" id="pick"></div>
+</div>
+
+<script>
+(function(){
+const FONTS=[
+  {id:'poster',name:'Big Shoulders Display',wm:'"Big Shoulders Display"',w:900,wdth:100,style:'normal',track:'0',note:'Condensada de cartaz de cinema. É a que o site usa hoje.'},
+  {id:'archivo',name:'Archivo Condensada',wm:'"Archivo"',w:800,wdth:62,style:'normal',track:'0',note:'Mesma família do texto do site, só que apertada e pesada. Visual limpo, de uma fonte só.'},
+  {id:'anton',name:'Anton',wm:'"Anton"',w:400,wdth:100,style:'normal',track:'.01em',note:'Clássica de título de filme de ação. Forte e direta.'},
+  {id:'bricolage',name:'Bricolage Grotesque',wm:'"Bricolage Grotesque"',w:800,wdth:100,style:'normal',track:'-.02em',note:'Moderna, com personalidade nas curvas. Mais de rede social que de cinema.'},
+  {id:'unbounded',name:'Unbounded',wm:'"Unbounded"',w:800,wdth:100,style:'normal',track:'-.02em',note:'Larga e arredondada. Lembra logo de app e de streaming.'},
+  {id:'bodoni',name:'Bodoni Moda Itálico',wm:'"Bodoni Moda"',w:800,wdth:100,style:'italic',track:'0',note:'Serifa de alto contraste, de revista de cinema. A mais elegante e menos de super-herói.'},
+];
+
+// Símbolos desenhados em código: um só desenho por conceito, usado em todos os tamanhos.
+const MARKS={
+  grade:{name:'Grade de cartazes',text:'O "gram" do nome: uma parede de cartazes em que os já vistos ficam acesos. É exatamente o que o site faz.',
+    svg:c=>`<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="5" y="2" width="17" height="21" rx="2" fill="${c}"/><rect x="26" y="2" width="17" height="21" rx="2" fill="${c}"/><rect x="5" y="25" width="17" height="21" rx="2" fill="${c}"/><rect x="27.2" y="26.2" width="14.6" height="18.6" rx="1.6" fill="none" stroke="#F2F1EE" stroke-width="2.4" opacity=".55"/></svg>`},
+  linha:{name:'Linha do tempo',text:'Uma linha com três marcos. Os dois primeiros já passaram; o último, maior, é a estreia que todo mundo está esperando.',
+    svg:c=>`<svg viewBox="0 0 48 48" aria-hidden="true"><line x1="4" y1="24" x2="44" y2="24" stroke="#F2F1EE" stroke-width="2.4" stroke-linecap="round" opacity=".55"/><circle cx="8" cy="24" r="4" fill="#F2F1EE"/><circle cx="20" cy="24" r="4" fill="#F2F1EE"/><circle cx="37" cy="24" r="8" fill="${c}"/></svg>`},
+  m:{name:'M de cartazes',text:'Um M feito de cinco cartazes de alturas diferentes, como uma fileira na parede. Funciona bem pequeno, até na aba do navegador.',
+    svg:c=>`<svg viewBox="0 0 48 48" aria-hidden="true"><g fill="#F2F1EE"><rect x="4" y="6" width="7" height="36" rx="1.5"/><rect x="13" y="13" width="7" height="22" rx="1.5"/><rect x="28" y="13" width="7" height="22" rx="1.5"/><rect x="37" y="6" width="7" height="36" rx="1.5"/></g><rect x="20.5" y="20" width="7" height="22" rx="1.5" fill="${c}"/></svg>`},
+  ingresso:{name:'Ingresso',text:'Um ingresso de cinema com o picote no meio. Remete à sessão de estreia e é fácil de reconhecer.',
+    svg:c=>`<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M6 12h36a2 2 0 0 1 2 2v6a4 4 0 0 0 0 8v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6a4 4 0 0 0 0-8v-6a2 2 0 0 1 2-2z" fill="${c}"/><line x1="31" y1="15" x2="31" y2="33" stroke="#0A0A0B" stroke-width="2.2" stroke-dasharray="3 3"/><rect x="11" y="19" width="14" height="3" rx="1.5" fill="#0A0A0B" opacity=".75"/><rect x="11" y="26" width="9" height="3" rx="1.5" fill="#0A0A0B" opacity=".75"/></svg>`},
+  nenhum:{name:'Só o nome',text:'Sem símbolo: o nome faz todo o trabalho. No ícone do celular e na aba do navegador entra só a inicial.',
+    svg:null},
+};
+
+const S={font:'poster',mark:'grade',accent:'#E8B04B',on:'#1A1204',accentName:'Âmbar de letreiro',case:'uppercase'};
+try{Object.assign(S,JSON.parse(localStorage.getItem('moviegram-marca')||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem('moviegram-marca',JSON.stringify(S))}catch(e){}};
+
+const root=document.documentElement;
+const wmHTML=()=>'Movie<span class="g">gram</span>';
+const initial=(size)=>`<span class="wm" style="font-size:${size}px;line-height:1;color:var(--accent)">M</span>`;
+
+function applyVars(){
+  const f=FONTS.find(x=>x.id===S.font)||FONTS[0];
+  root.style.setProperty('--wm',f.wm);root.style.setProperty('--wm-w',f.w);root.style.setProperty('--wm-wdth',f.wdth);
+  root.style.setProperty('--wm-style',f.style);root.style.setProperty('--wm-track',f.track);root.style.setProperty('--wm-case',S.case);
+  root.style.setProperty('--accent',S.accent);root.style.setProperty('--on-accent',S.on);
+}
+
+function render(){
+  applyVars();
+  document.getElementById('fonts').innerHTML=FONTS.map(f=>`<button class="font" data-font="${f.id}" aria-pressed="${S.font===f.id}"><span class="name">${f.name}</span><span class="wm" style="font-family:${f.wm};font-weight:${f.w};font-stretch:${f.wdth}%;font-style:${f.style};letter-spacing:${f.track}">${wmHTML()}</span><span class="note">${f.note}</span></button>`).join('');
+  document.getElementById('concepts').innerHTML=Object.entries(MARKS).map(([k,m])=>{
+    const svg=m.svg?m.svg(S.accent):'';
+    const icon=m.svg?svg:initial(56);
+    return `<div class="concept"><div><h3>${m.name}</h3><p>${m.text}</p><div class="lockup">${svg}<span class="wm">${wmHTML()}</span></div></div>
+      <div class="icon" title="Ícone do celular">${icon}</div>
+      <div class="sizes"><div class="fav"><div class="s32">${m.svg?svg:initial(22)}</div>32 px</div><div class="fav"><div class="s20">${m.svg?svg:initial(14)}</div>aba</div><button class="opt" data-mark="${k}" aria-pressed="${S.mark===k}">${S.mark===k?'Escolhido':'Escolher'}</button></div></div>`;
+  }).join('');
+  const m=MARKS[S.mark];
+  document.getElementById('pv-wm').innerHTML=(m.svg?`<span style="display:inline-flex;vertical-align:-6px;margin-right:10px;width:30px;height:30px">${m.svg(S.accent)}</span>`:'')+wmHTML();
+  document.querySelectorAll('[data-accent]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.accent===S.accent)));
+  document.querySelectorAll('[data-case]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.case===S.case)));
+  const f=FONTS.find(x=>x.id===S.font);
+  const caseName={uppercase:'maiúsculas',none:'Moviegram',lowercase:'minúsculas'}[S.case];
+  const txt=`Fonte ${f.name}, símbolo ${m.name}, cor ${S.accentName}, letras ${caseName}`;
+  document.getElementById('pick').innerHTML=`<span>Sua escolha: <b>${txt}</b></span><button class="opt copy" id="copy">Copiar escolha</button>`;
+  document.getElementById('copy').dataset.txt=txt;
+}
+
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button');if(!t) return;
+  if(t.dataset.font) S.font=t.dataset.font;
+  else if(t.dataset.mark) S.mark=t.dataset.mark;
+  else if(t.dataset.accent){S.accent=t.dataset.accent;S.on=t.dataset.on;S.accentName=t.dataset.name}
+  else if(t.dataset.case) S.case=t.dataset.case;
+  else if(t.id==='copy'){
+    const txt=t.dataset.txt;
+    const done=()=>{t.textContent='Copiado';setTimeout(()=>{t.textContent='Copiar escolha'},1600)};
+    try{navigator.clipboard.writeText(txt).then(done,()=>{t.textContent='Selecione o texto e copie'})}catch(err){t.textContent='Selecione o texto e copie'}
+    return;
+  } else return;
+  save();render();
+});
+render();
+})();
+</script>

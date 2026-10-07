@@ -1,0 +1,980 @@
+<title>Maratona Doomsday</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Tema único escuro, de propósito: sala de cinema. */
+:root{
+  color-scheme:dark;
+  --bg:#0B0C10; --bg-2:#0F1116; --surface:#15171E; --surface-2:#1C1F28; --surface-3:#262A36;
+  --line:#242834; --line-strong:#363B49;
+  --ink:#EEEFF3; --muted:#9CA2B0; --faint:#6A7080;
+  --doom:#3FBF80; --doom-ink:#04110A; --doom-deep:#0E2E20; --gold:#F5C04A; --focus:#8AB4FF;
+  --tempo:#33C98A; --espaco:#5B8EF0; --poder:#A970EA; --realidade:#F0575D; --mente:#F2C230; --alma:#F28C3E;
+  --display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0;padding:0;text-align:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:6px}
+.muted{color:var(--muted)}
+.shell{max-width:1440px;margin:0 auto;padding-inline:clamp(16px,3vw,40px)}
+
+/* ---------- barra do app ---------- */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:rgba(11,12,16,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.bar-in{display:flex;align-items:center;gap:16px;height:64px}
+.brand{font-family:var(--display);font-weight:900;font-size:26px;letter-spacing:.02em;text-transform:uppercase;line-height:1;white-space:nowrap}
+.brand b{color:var(--doom);font-weight:900}
+.tabs{display:flex;gap:4px;margin-left:16px}
+.tabs a{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:9px;color:var(--muted);text-decoration:none;font-weight:600;font-size:14px}
+.tabs a:hover{color:var(--ink);background:var(--surface)}
+.tabs a[aria-current="page"]{color:var(--ink);background:var(--surface-2)}
+.tabs svg{width:18px;height:18px}
+.me{margin-left:auto;position:relative}
+.me-btn{display:flex;align-items:center;gap:8px;padding:4px 12px 4px 4px;border-radius:999px;border:1px solid var(--line-strong);background:var(--surface);font-weight:600;font-size:14px}
+.me-btn .caret{opacity:.6;font-size:11px}
+.me-menu{position:absolute;right:0;top:calc(100% + 8px);width:270px;background:var(--surface);border:1px solid var(--line-strong);border-radius:14px;padding:8px;box-shadow:0 24px 60px rgba(0,0,0,.55);z-index:40}
+.me-menu .lbl{padding:6px 8px 2px}
+.me-menu button{display:flex;width:100%;align-items:center;gap:10px;padding:8px;border-radius:9px;font-weight:500}
+.me-menu button:hover{background:var(--surface-2)}
+.me-menu button[aria-pressed="true"]{background:var(--surface-3)}
+.me-menu p{font-size:12px;color:var(--muted);margin:6px 8px 4px;line-height:1.45}
+@media (max-width:760px){
+  .tabs{position:fixed;left:0;right:0;bottom:0;margin:0;z-index:45;background:rgba(21,23,30,.97);backdrop-filter:blur(12px);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(3,1fr);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px))}
+  .tabs a{flex-direction:column;gap:2px;font-size:11.5px;padding:6px 4px;justify-content:center}
+  .me-btn .nm,.me-btn .caret{display:none}
+  .me-btn{padding:3px}
+  #view{padding-bottom:84px}
+  .brand{font-size:22px}
+}
+
+.proto{margin-top:16px;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:12.5px;color:var(--muted);border:1px dashed var(--line-strong);border-radius:10px;padding:8px 12px}
+.proto b{font:600 10.5px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--ink);background:var(--surface-2);border-radius:4px;padding:2px 7px}
+
+.lbl{font:600 10.5px/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 10px;display:block}
+.btn{display:inline-flex;align-items:center;gap:8px;font:600 13.5px var(--sans);padding:9px 14px;border-radius:9px;border:1px solid var(--line-strong);background:var(--surface-2);color:var(--ink);white-space:nowrap}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn.on{background:var(--doom);border-color:var(--doom);color:var(--doom-ink)}
+.btn.ghost{background:none}
+.btn.sm{padding:5px 10px;font-size:12.5px}
+.row-btns{display:flex;flex-wrap:wrap;gap:8px}
+.linkish{text-decoration:underline;text-decoration-color:var(--line-strong);text-underline-offset:3px}
+.linkish:hover{text-decoration-color:var(--ink)}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;min-width:0}
+
+/* ---------- avatares e estrelas ---------- */
+.av{--s:24px;width:var(--s);height:var(--s);border-radius:50%;display:inline-grid;place-items:center;background:var(--pc);color:#fff;font:700 calc(var(--s)*.44)/1 var(--sans);flex:none;box-shadow:0 0 0 2px var(--bg)}
+.av.sm{--s:22px}.av.md{--s:30px}.av.lg{--s:64px}.av.xl{--s:96px}
+.stack{display:flex}
+.stack .av+.av{margin-left:-7px}
+.stars{position:relative;display:inline-block;font-size:13px;line-height:1;letter-spacing:1px;color:var(--surface-3);white-space:nowrap;vertical-align:-1px}
+.stars::before{content:"★★★★★"}
+.stars::after{content:"★★★★★";position:absolute;left:0;top:0;width:var(--v);overflow:hidden;color:var(--gold)}
+.stars.lg{font-size:22px;letter-spacing:2px}
+
+/* ---------- cartaz ---------- */
+.poster{position:relative;display:block;aspect-ratio:2/3;width:100%;border-radius:10px;overflow:hidden;container-type:inline-size;background:radial-gradient(130% 90% at 50% 28%,var(--pa) 0%,var(--pb) 78%);box-shadow:0 12px 30px -14px rgba(0,0,0,.85),0 0 0 1px rgba(255,255,255,.07);color:#fff;text-align:left;isolation:isolate}
+.poster .motif{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+.poster::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(circle at 1px 1px,rgba(255,255,255,.08) 1px,transparent 1.3px) 0 0/4px 4px,linear-gradient(180deg,rgba(0,0,0,.4) 0%,transparent 22%,transparent 40%,rgba(0,0,0,.9) 100%)}
+.p-top{position:absolute;z-index:2;top:6cqw;left:7cqw;right:24cqw;font:600 5cqw/1.2 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.8)}
+.p-ess{position:absolute;z-index:2;top:16cqw;left:0;background:var(--gold);color:#1d1400;font:700 4.6cqw/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:1.8cqw 3.4cqw 1.8cqw 7cqw;border-radius:0 3px 3px 0}
+.p-title{position:absolute;z-index:2;left:7cqw;right:7cqw;bottom:8cqw;font-family:var(--display);text-transform:uppercase;text-shadow:0 2px 14px rgba(0,0,0,.65)}
+.p-title small{display:block;font-size:6.4cqw;font-weight:700;letter-spacing:.04em;opacity:.85;margin-bottom:1.6cqw;line-height:1.05}
+.p-title b{display:block;font-weight:900;line-height:.86;letter-spacing:.005em;text-wrap:balance;overflow-wrap:anywhere}
+.p-title b.xl{font-size:19cqw}.p-title b.l{font-size:15cqw}.p-title b.m{font-size:12cqw}.p-title b.s{font-size:9.4cqw}
+@container (max-width:110px){.p-top,.p-title,.p-ess{display:none}}
+
+/* ---------- linha do tempo ---------- */
+.hero{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.35fr) minmax(0,1.15fr);gap:16px;margin-top:22px}
+@media (max-width:1100px){.hero{grid-template-columns:1fr 1fr}.h-next{grid-column:1/-1}}
+@media (max-width:640px){.hero{grid-template-columns:1fr}}
+.h-count{background:radial-gradient(120% 140% at 0% 0%,#1b5c3f 0%,var(--doom-deep) 55%,#07140e 100%);border-color:#1f4d37}
+.h-count .lbl{color:#9fd6bb}
+.h-count .big{font-family:var(--display);font-weight:900;font-size:clamp(64px,7vw,96px);line-height:.82;color:var(--doom);font-variant-numeric:tabular-nums}
+.h-count .big small{font-size:.32em;margin-left:8px;color:var(--ink);text-transform:uppercase;letter-spacing:.03em}
+.h-count .sub{font-weight:600;margin-top:12px}
+.h-count .enc{font-size:12.5px;color:#b9d8c8;margin-top:6px}
+.h-prog .num{font-family:var(--display);font-weight:800;font-size:48px;line-height:1;font-variant-numeric:tabular-nums}
+.h-prog .num span{font-size:24px;color:var(--muted);font-weight:700}
+.segbar{display:flex;gap:3px;height:12px;margin:14px 0 10px}
+.segbar span{position:relative;border-radius:3px;background:color-mix(in srgb,var(--c) 16%,var(--surface-2));overflow:hidden}
+.segbar span i{position:absolute;inset:0 auto 0 0;background:var(--c);border-radius:3px}
+.seg-legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11.5px;color:var(--muted)}
+.seg-legend span{display:inline-flex;align-items:center;gap:5px}
+.seg-legend i{width:8px;height:8px;border-radius:2px;background:var(--c)}
+.h-sub{display:flex;flex-wrap:wrap;gap:4px 18px;font-size:13px;color:var(--muted);margin-top:12px}
+.h-sub b{color:var(--ink);font-family:var(--mono);font-weight:600}
+.h-next{display:grid;grid-template-columns:96px minmax(0,1fr);gap:18px;align-items:center}
+.h-next>button{display:block;width:100%}
+.h-next h3{margin:0 0 4px;font-size:18px;line-height:1.25;text-wrap:balance}
+.h-next .meta{font-size:12.5px;color:var(--muted);margin-bottom:14px}
+
+.tools{margin-top:30px;display:grid;gap:12px}
+.tools-row{display:flex;flex-wrap:wrap;gap:10px 12px;align-items:center}
+.search{flex:1 1 220px;min-width:0;display:flex;align-items:center;gap:8px;padding:0 12px;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface)}
+.search svg{width:16px;height:16px;color:var(--muted);flex:none}
+.search input{flex:1;min-width:0;border:0;background:none;padding:9px 0;outline:none}
+.search:focus-within{border-color:var(--focus)}
+.seg{display:inline-flex;border:1px solid var(--line-strong);border-radius:10px;overflow:hidden;background:var(--surface)}
+.seg button{padding:8px 12px;font-size:13px;font-weight:600;color:var(--muted);display:inline-flex;gap:6px;align-items:center}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button:hover{color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.seg svg{width:15px;height:15px}
+.chk{display:inline-flex;gap:8px;align-items:center;font-size:13px;color:var(--muted);cursor:pointer}
+.chk input{accent-color:var(--doom);width:16px;height:16px}
+.sagas{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin;scrollbar-color:var(--line-strong) transparent}
+.sagas button{flex:none;display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;border:1px solid var(--line-strong);background:var(--surface);font-size:13px;font-weight:500;white-space:nowrap}
+.sagas button:hover{border-color:var(--muted)}
+.sagas button span{font:500 11px var(--mono);color:var(--muted)}
+.sagas button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.sagas button[aria-pressed="true"] span{color:inherit;opacity:.7}
+.result{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:13px;color:var(--muted);margin-top:14px;min-height:30px}
+.result b{color:var(--ink)}
+
+.era{margin-top:42px}
+.era-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin-bottom:6px}
+.gem{width:16px;height:16px;flex:none;background:var(--c);clip-path:polygon(50% 0,100% 38%,82% 100%,18% 100%,0 38%)}
+.era-name{font-family:var(--display);font-weight:800;font-size:clamp(26px,3vw,36px);line-height:1;text-transform:uppercase;letter-spacing:.015em;margin:0}
+.era-stone{font:600 10.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--c)}
+.era-prog{display:flex;align-items:center;gap:10px;margin-left:auto;font:500 12px var(--mono);color:var(--muted)}
+.mini{width:90px;height:4px;border-radius:2px;background:var(--surface-3);overflow:hidden}
+.mini i{display:block;height:100%;background:var(--c)}
+.arrows{display:flex;gap:6px}
+.arrows button{width:34px;height:34px;border-radius:50%;border:1px solid var(--line-strong);background:var(--surface);display:grid;place-items:center;font-size:20px;line-height:1;padding-bottom:2px}
+.arrows button:hover{border-color:var(--ink)}
+.era-note{margin:0 0 4px;font-size:13px;color:var(--muted)}
+.sub-head{margin:20px 0 0;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center}
+.sub-head b{font:600 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--c)}
+.sub-head span{font-size:13px;color:var(--muted)}
+.sub-head .arrows{margin-left:auto}
+.rail{display:grid;grid-auto-flow:column;grid-auto-columns:clamp(148px,14vw,188px);gap:18px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;padding:32px 4px 16px;background:linear-gradient(color-mix(in srgb,var(--c) 45%,transparent),color-mix(in srgb,var(--c) 45%,transparent)) 0 15px/100% 2px no-repeat local;scrollbar-width:thin;scrollbar-color:var(--line-strong) transparent}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:30px 18px;padding-top:14px}
+.card{position:relative;scroll-snap-align:start;min-width:0}
+.card .dot{display:none}
+.rail .card .dot{display:block;position:absolute;top:-24px;left:12px;width:12px;height:12px;border-radius:50%;border:2px solid var(--c);background:var(--bg)}
+.rail .card.seen .dot{background:var(--c)}
+.p-wrap{position:relative}
+.p-open{display:block;width:100%;border-radius:10px;transition:transform .25s ease}
+.p-open:hover{transform:translateY(-4px)}
+.p-open:hover .poster{box-shadow:0 20px 40px -14px rgba(0,0,0,.95),0 0 0 1px rgba(255,255,255,.18)}
+.c-check{position:absolute;top:8px;right:8px;z-index:3;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:rgba(8,9,12,.55);backdrop-filter:blur(6px);border:1.5px solid rgba(255,255,255,.55);color:transparent;transition:background .15s,color .15s}
+.c-check:hover{color:rgba(255,255,255,.85);border-color:#fff}
+.c-check[aria-pressed="true"]{background:var(--doom);border-color:var(--doom);color:var(--doom-ink)}
+.c-check svg{width:16px;height:16px}
+.card.seen .poster{box-shadow:0 12px 30px -14px rgba(0,0,0,.85),0 0 0 2px var(--doom)}
+.c-info{padding-top:10px}
+.c-t{margin:0;font-size:14px;font-weight:600;line-height:1.3}
+.c-t button{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.c-t button:hover{text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line-strong)}
+.c-meta{font-size:12px;color:var(--muted);margin-top:2px;font-variant-numeric:tabular-nums}
+.c-foot{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:8px;min-height:24px}
+.c-avg{display:inline-flex;align-items:center;gap:4px;font:600 12.5px var(--mono)}
+.c-avg i{font-style:normal;color:var(--gold)}
+.c-none{font-size:12px;color:var(--faint)}
+.c-soon{font-size:12px;color:var(--doom);font-weight:600}
+.empty{padding:70px 0;text-align:center;color:var(--muted)}
+.empty b{color:var(--ink);font-size:17px}
+
+/* ---------- detalhe (modal) ---------- */
+.modal{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:24px}
+.m-back{position:absolute;inset:0;background:rgba(4,5,8,.82);backdrop-filter:blur(6px)}
+.sheet{position:relative;width:min(1000px,100%);max-height:calc(100dvh - 48px);overflow:auto;background:var(--surface);border:1px solid var(--line-strong);border-radius:18px;box-shadow:0 40px 100px rgba(0,0,0,.6);overscroll-behavior:contain}
+.m-glow{position:absolute;inset:0 0 auto 0;height:340px;background:radial-gradient(80% 100% at 15% 0%,color-mix(in srgb,var(--pa) 75%,transparent),transparent 70%);pointer-events:none}
+.m-x{position:absolute;top:14px;right:14px;z-index:2;width:38px;height:38px;border-radius:50%;background:rgba(0,0,0,.45);border:1px solid var(--line-strong);display:grid;place-items:center;font-size:17px}
+.m-x:hover{border-color:var(--ink)}
+.m-grid{position:relative;display:grid;grid-template-columns:270px minmax(0,1fr);gap:34px;padding:32px}
+.m-left .poster{box-shadow:0 30px 60px -20px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.1)}
+.m-order{margin-top:12px;font:500 12px var(--mono);color:var(--muted);text-align:center}
+.m-era{display:flex;align-items:center;gap:8px;font:600 11px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--c)}
+.m-era .gem{width:12px;height:12px}
+.sheet h2{font-family:var(--display);font-weight:900;font-size:clamp(34px,4.4vw,54px);line-height:.92;text-transform:uppercase;margin:10px 0 12px;letter-spacing:.005em;text-wrap:balance;padding-right:44px}
+.m-meta{color:var(--muted);font-size:14px}
+.m-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;align-items:center}
+.tag{padding:4px 11px;border-radius:999px;border:1px solid var(--line-strong);font-size:12.5px;background:var(--surface-2)}
+.tag:hover{border-color:var(--ink)}
+.pill{font:700 10.5px var(--mono);letter-spacing:.07em;text-transform:uppercase;padding:5px 9px;border-radius:999px;background:var(--gold);color:#1d1400}
+.pill.opt{background:var(--surface-3);color:var(--muted)}
+.m-crowd{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-top:20px;padding:14px 16px;border-radius:12px;background:var(--bg-2);border:1px solid var(--line)}
+.m-crowd b{font-family:var(--display);font-size:32px;font-weight:800;line-height:1}
+.m-sec{margin-top:24px}
+.m-sec h3{font:600 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
+.m-sec h3 span{color:var(--ink);text-transform:none;letter-spacing:0;font-family:var(--sans);font-weight:500}
+.mine-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px}
+.srate{display:inline-flex;flex-direction:row-reverse}
+.srate button{padding:2px;color:var(--surface-3);transition:color .12s,transform .12s}
+.srate button svg{width:32px;height:32px;display:block}
+.srate button.on{color:var(--gold)}
+.srate:hover button{color:var(--surface-3)}
+.srate button:hover,.srate button:hover~button{color:var(--gold)}
+.srate button:active{transform:scale(.88)}
+.rate-lbl{font-size:13.5px;color:var(--muted)}
+.m-when{font-size:12.5px;color:var(--muted);margin-top:10px}
+textarea{width:100%;min-height:74px;resize:vertical;padding:10px 12px;border:1px solid var(--line-strong);border-radius:10px;background:var(--bg-2);margin-bottom:10px;display:block}
+textarea:focus{border-color:var(--focus);outline:none}
+.friends{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.friends li{display:grid;grid-template-columns:30px minmax(0,1fr);gap:3px 12px;align-items:center}
+.friends .fn{font-weight:600}
+.friends .fs{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.friends q{grid-column:2;font-style:italic;font-size:14px;quotes:"“" "”"}
+.m-doom{margin-top:20px;padding:18px;border-radius:12px;background:var(--doom-deep);border:1px solid #1f4d37}
+.m-nav{display:flex;justify-content:space-between;gap:12px;margin-top:30px;padding-top:18px;border-top:1px solid var(--line)}
+.m-nav button{max-width:48%;font-size:12.5px;color:var(--muted);display:grid;gap:2px;min-width:0}
+.m-nav button b{color:var(--ink);font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.m-nav button.nx{text-align:right;margin-left:auto}
+.m-nav button:hover b{text-decoration:underline}
+@media (max-width:760px){
+  .modal{padding:0}
+  .sheet{max-height:100dvh;height:100dvh;border-radius:0;border:0}
+  .m-grid{grid-template-columns:1fr;padding:20px 16px calc(32px + env(safe-area-inset-bottom,0px));gap:20px}
+  .m-left{width:min(210px,62%);margin:0 auto}
+}
+
+/* ---------- páginas ranking / perfil ---------- */
+.page-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px 24px;margin-top:30px}
+.page-head h1{font-family:var(--display);font-weight:900;font-size:clamp(46px,6vw,76px);line-height:.86;text-transform:uppercase;margin:0}
+.page-head p{margin:10px 0 0;color:var(--muted);max-width:52ch}
+.podium{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:end;margin:34px auto 0;max-width:720px}
+.pod{display:grid;justify-items:center;gap:8px;text-align:center}
+.pod .av{box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--mc)}
+.pod .pn{font-weight:700;font-size:16px}
+.pod .pv{font-family:var(--display);font-weight:800;font-size:34px;line-height:1;font-variant-numeric:tabular-nums}
+.pod .pv small{font-size:15px;color:var(--muted);font-weight:700;font-family:var(--sans)}
+.pod .blk{width:100%;border-radius:12px 12px 4px 4px;background:linear-gradient(180deg,color-mix(in srgb,var(--mc) 30%,var(--surface-2)),var(--surface));border:1px solid color-mix(in srgb,var(--mc) 40%,var(--line));display:grid;place-items:start center;padding-top:10px;font-family:var(--display);font-weight:900;font-size:40px;color:var(--mc)}
+.pod.r1 .blk{height:150px}.pod.r2 .blk{height:110px}.pod.r3 .blk{height:80px}
+.you{font:600 10px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--doom);border:1px solid var(--doom);border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:2px}
+.table-wrap{overflow-x:auto;margin-top:30px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:780px}
+th{font:600 10.5px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);text-align:left;padding:12px 16px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:12px 16px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--muted)}
+tr:last-child td{border-bottom:0}
+tr.me-row td{background:color-mix(in srgb,var(--doom) 7%,transparent)}
+td.pos{font-family:var(--display);font-weight:800;font-size:22px;color:var(--ink);width:56px}
+td.hl{color:var(--ink);font-weight:700}
+.who-cell{display:flex;align-items:center;gap:10px;font-weight:600;color:var(--ink)}
+.who-cell button:hover{text-decoration:underline}
+.tbar{display:inline-block;width:80px;height:5px;border-radius:3px;background:var(--surface-3);vertical-align:middle;margin-right:10px;overflow:hidden}
+.tbar i{display:block;height:100%;background:var(--pc)}
+.section{margin-top:48px}
+.section h2{font-family:var(--display);font-weight:800;font-size:32px;text-transform:uppercase;margin:0 0 4px;line-height:1}
+.section>p{margin:0 0 18px;color:var(--muted);font-size:14px}
+.favs,.minis{display:grid;grid-auto-flow:column;gap:16px;overflow-x:auto;padding:4px 4px 12px;scrollbar-width:thin;scrollbar-color:var(--line-strong) transparent}
+.favs{grid-auto-columns:clamp(132px,12vw,164px)}
+.minis{grid-auto-columns:clamp(116px,10vw,142px)}
+.fav,.mini-card{display:block;text-align:left;min-width:0}
+.fav .p-wrap{padding-left:14px}
+.fav .rk{position:absolute;left:-2px;bottom:-8px;z-index:3;font-family:var(--display);font-weight:900;font-size:66px;line-height:.8;color:var(--ink);-webkit-text-stroke:3px var(--bg);paint-order:stroke fill}
+.fav .ft,.mini-card .mt{font-size:13px;font-weight:600;margin-top:10px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.fav .ft{padding-left:14px}
+.fav .fm{display:flex;align-items:center;gap:6px;font:500 12px var(--mono);color:var(--muted);margin-top:4px;padding-left:14px}
+.mini-card .stars{margin-top:5px;font-size:12px}
+.fav:hover .ft,.mini-card:hover .mt{text-decoration:underline;text-underline-offset:3px}
+.split{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.div-card{display:grid;grid-template-columns:64px minmax(0,1fr);gap:14px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px}
+.div-card:hover{border-color:var(--line-strong)}
+.div-card .dt{font-weight:600;line-height:1.3}
+.div-card ul{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:5px}
+.div-card li{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.div-card li span:nth-child(2){min-width:60px}
+
+.pf-pick{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:24px}
+.pf-pick .lbl{margin:0 6px 0 0}
+.pf-pick button{display:inline-flex;align-items:center;gap:8px;padding:4px 12px 4px 4px;border-radius:999px;border:1px solid var(--line-strong);background:var(--surface);font-weight:500;font-size:13.5px}
+.pf-pick button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.pf-head{margin-top:18px;border-radius:18px;border:1px solid var(--line);background:radial-gradient(90% 160% at 0% 0%,color-mix(in srgb,var(--pc) 42%,var(--surface)) 0%,var(--surface) 62%);padding:28px;display:flex;flex-wrap:wrap;gap:20px 28px;align-items:center}
+.pf-head h1{font-family:var(--display);font-weight:900;font-size:clamp(46px,6vw,76px);line-height:.86;text-transform:uppercase;margin:0;overflow-wrap:anywhere}
+.pf-head .pf-sub{color:var(--muted);margin-top:10px;font-size:14px}
+.pf-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.edit{margin-top:14px;display:grid;gap:16px;max-width:520px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px}
+.edit input[type=text]{width:100%;padding:9px 12px;border:1px solid var(--line-strong);border-radius:9px;background:var(--bg-2)}
+.edit input[type=text]:focus{border-color:var(--focus);outline:none}
+.swatches{display:flex;flex-wrap:wrap;gap:10px}
+.swatches button{width:30px;height:30px;border-radius:50%;background:var(--sw);box-shadow:0 0 0 2px var(--surface)}
+.swatches button[aria-pressed="true"]{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--ink)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:16px}
+.stat .v{font-family:var(--display);font-weight:800;font-size:42px;line-height:1;font-variant-numeric:tabular-nums}
+.stat .v small{font-size:19px;color:var(--muted);font-weight:700;margin-left:2px}
+.stat .d{font-size:12.5px;color:var(--muted);margin-top:6px}
+.pf-cols{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px;margin-top:16px}
+@media (max-width:860px){.pf-cols{grid-template-columns:1fr}}
+.eras-list{display:grid;gap:12px}
+.er{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 10px;align-items:center;font-size:13.5px}
+.er .bar{grid-column:1/-1;height:8px;border-radius:4px;background:color-mix(in srgb,var(--c) 14%,var(--surface-2));overflow:hidden}
+.er .bar i{display:block;height:100%;background:var(--c);border-radius:4px}
+.er .n{font:500 12.5px var(--mono);color:var(--muted)}
+.hist{display:grid;gap:10px}
+.hr{display:grid;grid-template-columns:82px minmax(0,1fr) 28px;gap:10px;align-items:center}
+.hb{height:10px;border-radius:5px;background:var(--surface-2);overflow:hidden}
+.hb i{display:block;height:100%;background:var(--gold);border-radius:5px}
+.hr .n{font:500 12px var(--mono);color:var(--muted);text-align:right}
+.pace{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+.pace b{font-family:var(--display);font-size:30px;font-weight:800;color:var(--doom);margin-right:4px}
+.recent{list-style:none;margin:0;padding:0;display:grid;gap:4px;max-width:760px}
+.recent button{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:14px;align-items:center;width:100%;padding:6px 10px 6px 6px;border-radius:10px}
+.recent button:hover{background:var(--surface)}
+.recent .poster{border-radius:5px}
+.recent .rt{display:block;font-weight:600;font-size:14px;line-height:1.3}
+.recent .rd{display:block;font-size:12.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 24px);transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:10px;font-size:13.5px;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.4);z-index:80;max-width:calc(100% - 32px)}
+@media (max-width:760px){.toast{bottom:calc(env(safe-area-inset-bottom,0px) + 84px)}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<header class="bar">
+  <div class="shell bar-in">
+    <div class="brand">Maratona <b>Doomsday</b></div>
+    <nav class="tabs" aria-label="Seções">
+      <a href="#linha" data-tab="linha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 12h20"/><circle cx="6" cy="12" r="2.6" fill="currentColor"/><circle cx="18" cy="12" r="2.6" fill="currentColor"/><circle cx="12" cy="12" r="2.6" fill="var(--bg)"/></svg>Linha do tempo</a>
+      <a href="#ranking" data-tab="ranking"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4"/><path d="M12 13v4M9 20h6"/></svg>Ranking</a>
+      <a href="#perfil" data-tab="perfil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Perfil</a>
+    </nav>
+    <div class="me" id="me"></div>
+  </div>
+</header>
+<div class="shell">
+  <div class="proto"><b>Protótipo</b> Dados de exemplo. Os cartazes são ilustrações geradas aqui; no site de verdade entram os cartazes oficiais. As marcações ficam só neste navegador; no site real vão pro Supabase e a turma vê na hora.</div>
+  <main id="view"></main>
+</div>
+<div class="modal" id="modal" hidden></div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ================= DADOS ================= */
+const ERAS=[
+  {key:'tempo',name:'Passado',stone:'Joia do Tempo'},
+  {key:'espaco',name:'Formação dos Vingadores',stone:'Joia do Espaço'},
+  {key:'poder',name:'Guerra Civil até Ultimato',stone:'Joia do Poder'},
+  {key:'realidade',name:'Depois do Blip',stone:'Joia da Realidade'},
+  {key:'mente',name:'Fase 5 até Doomsday',stone:'Joia da Mente'},
+  {key:'alma',name:'Universos paralelos',stone:'Joia da Alma'}
+];
+const BUCKETS=[{name:'2008 – 2012',to:'2012-12'},{name:'2013 – 2015',to:'2015-12'},{name:'2016 – 2019',to:'2019-12'},{name:'2020 – 2022',to:'2022-12'},{name:'2023 – 2026',to:'2026-12'}];
+const GROUPS=[
+  {key:'xmen',name:'X-Men da Fox',hint:'Encaixe antes de Deadpool & Wolverine'},
+  {key:'sony',name:'Homem-Aranha da Sony',hint:'Encaixe antes de Sem Volta para Casa'},
+  {key:'outros',name:'Quarteto antigo, Blade e Elektra',hint:'Opcionais: aparecem em Deadpool & Wolverine'}
+];
+const KIND={f:'Filme',s:'Série',e:'Especial'};
+const SAGAS=[['vingadores','Vingadores'],['ferro','Homem de Ferro'],['cap','Capitão América'],['thor','Thor'],['hulk','Hulk'],['viuva','Viúva Negra'],['aranha','Homem-Aranha'],['gotg','Guardiões da Galáxia'],['formiga','Homem-Formiga'],['estranho','Doutor Estranho'],['pantera','Pantera Negra'],['capita','Capitã Marvel'],['loki','Loki'],['wanda','Wanda'],['multiverso','Multiverso'],['xmen','X-Men'],['wolverine','Wolverine & Deadpool'],['quarteto','Quarteto Fantástico'],['thunder','Thunderbolts'],['netflix','Demolidor & Defensores'],['shield','S.H.I.E.L.D.'],['outros','Outros heróis']];
+const SAGA=Object.fromEntries(SAGAS);
+
+// I(id, título, tipo, lançamento, flags[* essencial, o opcional], nota, era, sagas, minutos, grupo extra)
+const I=(id,t,k,r,fl,n,e,fr,m,g)=>({id,t,k,r,star:fl.includes('*'),opt:fl.includes('o'),n,e,fr:fr.split(' '),m,g});
+const ITEMS=[
+  I('olhos-wakanda','Olhos de Wakanda','s','2025-08','o','Histórias de Wakanda ao longo dos séculos',0,'pantera',120),
+  I('cap1','Capitão América: O Primeiro Vingador','f','2011-07','*','Se passa em 1943–45',0,'cap',124),
+  I('agent-carter','Agent Carter (T1 e T2)','s','2015-01','o','Se passa em 1946–47',0,'cap shield',756),
+  I('capita','Capitã Marvel','f','2019-03','','Se passa em 1995',0,'capita',123),
+
+  I('hdf1','Homem de Ferro','f','2008-05','*','',1,'ferro',126),
+  I('hdf2','Homem de Ferro 2','f','2010-05','','',1,'ferro viuva',124),
+  I('hulk','O Incrível Hulk','f','2008-06','','',1,'hulk',112),
+  I('thor1','Thor','f','2011-05','','',1,'thor',115),
+  I('vingadores','Os Vingadores','f','2012-05','*','',1,'vingadores ferro cap thor hulk viuva loki',143),
+  I('hdf3','Homem de Ferro 3','f','2013-05','','',1,'ferro',130),
+  I('thor2','Thor: O Mundo Sombrio','f','2013-11','','',1,'thor loki',112),
+  I('shield1','Agents of S.H.I.E.L.D. (T1)','s','2013-09','o','',1,'shield',946),
+  I('cap2','Capitão América: O Soldado Invernal','f','2014-04','*','',1,'cap viuva',136),
+  I('gotg1','Guardiões da Galáxia','f','2014-08','','',1,'gotg',121),
+  I('groot','Eu Sou Groot','s','2022-08','o','Curtas',1,'gotg',40),
+  I('gotg2','Guardiões da Galáxia Vol. 2','f','2017-05','','',1,'gotg',136),
+  I('shield2','Agents of S.H.I.E.L.D. (T2)','s','2014-09','o','',1,'shield',946),
+  I('dd1','Demolidor (T1)','s','2015-04','o','Netflix',1,'netflix',689),
+  I('jj','Jessica Jones (T1)','s','2015-11','o','Netflix',1,'netflix',689),
+  I('ultron','Vingadores: Era de Ultron','f','2015-05','*','',1,'vingadores ferro cap thor hulk viuva wanda',141),
+  I('formiga1','Homem-Formiga','f','2015-07','','',1,'formiga',117),
+
+  I('dd2','Demolidor (T2)','s','2016-03','o','Netflix',2,'netflix',689),
+  I('defensores','Luke Cage, Punho de Ferro, Os Defensores e O Justiceiro','s','2016-09','o','Netflix · 1ª temporada de cada',2,'netflix',2444),
+  I('shield35','Agents of S.H.I.E.L.D. (T3 a T5)','s','2015-09','o','',2,'shield',2838),
+  I('guerracivil','Capitão América: Guerra Civil','f','2016-05','*','',2,'cap ferro vingadores aranha pantera formiga viuva wanda',147),
+  I('viuva','Viúva Negra','f','2021-07','','',2,'viuva thunder',134),
+  I('pantera1','Pantera Negra','f','2018-02','*','',2,'pantera',134),
+  I('aranha1','Homem-Aranha: De Volta ao Lar','f','2017-07','','',2,'aranha ferro',133),
+  I('estranho1','Doutor Estranho','f','2016-11','','',2,'estranho',115),
+  I('ragnarok','Thor: Ragnarok','f','2017-11','*','',2,'thor hulk loki',130),
+  I('formiga2','Homem-Formiga e a Vespa','f','2018-07','','',2,'formiga',118),
+  I('guerrainf','Vingadores: Guerra Infinita','f','2018-04','*','',2,'vingadores ferro cap thor hulk aranha gotg estranho pantera viuva wanda loki',149),
+  I('ultimato','Vingadores: Ultimato','f','2019-04','*','Volta aos cinemas em 25/09 como Endgame Encore',2,'vingadores ferro cap thor hulk aranha gotg estranho pantera viuva wanda formiga capita loki',181),
+
+  I('loki1','Loki (T1)','s','2021-06','*','Acontece fora do tempo',3,'loki multiverso',300),
+  I('whatif1','What If...? (T1)','s','2021-08','','',3,'multiverso',288),
+  I('wandavision','WandaVision','s','2021-01','*','',3,'wanda',350),
+  I('falcao','Falcão e o Soldado Invernal','s','2021-03','*','',3,'cap thunder',300),
+  I('shangchi','Shang-Chi e a Lenda dos Dez Anéis','f','2021-09','*','',3,'outros',132),
+  I('eternos','Eternos','f','2021-11','','',3,'outros',156),
+  I('aranha2','Homem-Aranha: Longe de Casa','f','2019-07','','',3,'aranha',129),
+  I('aranha3','Homem-Aranha: Sem Volta para Casa','f','2021-12','*','Veja antes os Aranhas de Tobey e Andrew',3,'aranha estranho multiverso',148),
+  I('gaviao','Gavião Arqueiro','s','2021-11','','',3,'outros viuva',300),
+  I('eco','Eco','s','2024-01','o','',3,'netflix',200),
+  I('estranho2','Doutor Estranho no Multiverso da Loucura','f','2022-05','*','',3,'estranho wanda multiverso',126),
+  I('cavaleiro','Cavaleiro da Lua','s','2022-03','','',3,'outros',300),
+  I('msmarvel','Ms. Marvel','s','2022-06','','',3,'capita',270),
+  I('thor4','Thor: Amor e Trovão','f','2022-07','','',3,'thor',119),
+  I('lobisomem','Lobisomem na Noite','e','2022-10','o','',3,'outros',53),
+  I('mulherhulk','Mulher-Hulk','s','2022-08','','',3,'hulk',297),
+  I('wakanda','Pantera Negra: Wakanda para Sempre','f','2022-11','*','',3,'pantera',161),
+  I('invasao','Invasão Secreta','s','2023-06','','',3,'outros',270),
+  I('festas','Guardiões da Galáxia: Especial de Festas','e','2022-11','o','',3,'gotg',44),
+
+  I('quantumania','Homem-Formiga e a Vespa: Quantumania','f','2023-02','*','',4,'formiga multiverso',125),
+  I('gotg3','Guardiões da Galáxia Vol. 3','f','2023-05','','',4,'gotg',150),
+  I('marvels','As Marvels','f','2023-11','','A cena pós-créditos traz o Fera',4,'capita xmen',105),
+  I('loki2','Loki (T2)','s','2023-10','*','',4,'loki multiverso',300),
+  I('whatif23','What If...? (T2 e T3)','s','2023-12','o','',4,'multiverso',544),
+  I('zombies','Marvel Zombies','s','2025-09','o','',4,'multiverso',160),
+  I('agatha','Agatha Desde Sempre','s','2024-09','','',4,'wanda',360),
+  I('ironheart','Coração de Ferro','s','2025-06','','',4,'ferro pantera',270),
+  I('deadpool3','Deadpool & Wolverine','f','2024-07','*','Outro universo, mas conecta aqui',4,'wolverine xmen multiverso',128),
+  I('ddr1','Demolidor: Renascido (T1)','s','2025-03','','',4,'netflix',450),
+  I('cap4','Capitão América: Admirável Mundo Novo','f','2025-02','*','',4,'cap',118),
+  I('thunderbolts','Thunderbolts*','f','2025-05','*','',4,'thunder viuva',127),
+  I('ddr2','Demolidor: Renascido (T2)','s','2026-03','','',4,'netflix',400),
+  I('wonderman','Wonder Man','s','2026-01','o','',4,'outros',280),
+  I('quarteto','Quarteto Fantástico: Primeiros Passos','f','2025-07','*','Se passa na Terra-828',4,'quarteto multiverso',115),
+  I('aranha4','Homem-Aranha: Um Novo Dia','f','2026-07','','',4,'aranha',null),
+  I('doomsday','Vingadores: Doomsday','f','2026-12','','Estreia em 18 de dezembro de 2026',4,'vingadores multiverso quarteto xmen thunder',null),
+
+  I('x1','X-Men: O Filme','f','2000-07','*','',5,'xmen',104,'xmen'),
+  I('x2','X-Men 2','f','2003-05','*','',5,'xmen',134,'xmen'),
+  I('x3','X-Men: O Confronto Final','f','2006-05','*','',5,'xmen',104,'xmen'),
+  I('xo','X-Men Origens: Wolverine','f','2009-05','','',5,'wolverine xmen',107,'xmen'),
+  I('xfc','X-Men: Primeira Classe','f','2011-06','','',5,'xmen',132,'xmen'),
+  I('wolv2','Wolverine: Imortal','f','2013-07','','',5,'wolverine xmen',126,'xmen'),
+  I('xdofp','X-Men: Dias de um Futuro Esquecido','f','2014-05','*','',5,'xmen',132,'xmen'),
+  I('dp1','Deadpool','f','2016-02','','',5,'wolverine xmen',108,'xmen'),
+  I('xapoc','X-Men: Apocalipse','f','2016-05','','',5,'xmen',144,'xmen'),
+  I('logan','Logan','f','2017-03','','',5,'wolverine xmen',137,'xmen'),
+  I('dp2','Deadpool 2','f','2018-05','','',5,'wolverine xmen',119,'xmen'),
+  I('xdp','X-Men: Fênix Negra','f','2019-06','','',5,'xmen',113,'xmen'),
+  I('novos','Os Novos Mutantes','f','2020-08','','',5,'xmen',94,'xmen'),
+  I('sm1','Homem-Aranha','f','2002-05','','Tobey Maguire',5,'aranha',121,'sony'),
+  I('sm2','Homem-Aranha 2','f','2004-07','','Tobey Maguire',5,'aranha',127,'sony'),
+  I('sm3','Homem-Aranha 3','f','2007-05','','Tobey Maguire',5,'aranha',139,'sony'),
+  I('asm1','O Espetacular Homem-Aranha','f','2012-07','','Andrew Garfield',5,'aranha',136,'sony'),
+  I('asm2','O Espetacular Homem-Aranha 2','f','2014-05','','Andrew Garfield',5,'aranha',142,'sony'),
+  I('blade1','Blade: O Caçador de Vampiros','f','1998-08','o','',5,'outros',120,'outros'),
+  I('blade2','Blade II','f','2002-03','o','',5,'outros',117,'outros'),
+  I('blade3','Blade: Trinity','f','2004-12','o','',5,'outros',113,'outros'),
+  I('elektra','Elektra','f','2005-01','o','',5,'outros netflix',97,'outros'),
+  I('ff05','Quarteto Fantástico (2005)','f','2005-07','o','',5,'quarteto',106,'outros'),
+  I('ff07','Quarteto Fantástico e o Surfista Prateado','f','2007-06','o','',5,'quarteto',92,'outros'),
+  I('ff15','Quarteto Fantástico (2015)','f','2015-08','o','',5,'quarteto',100,'outros')
+];
+ITEMS.forEach((it,i)=>it.i=i);
+let _n=0; ITEMS.forEach(it=>{if(it.e<=4) it.num=++_n});
+const CRONO_TOTAL=_n;
+const BYID=Object.fromEntries(ITEMS.map(it=>[it.id,it]));
+const MAIN=ITEMS.filter(it=>it.e<=4&&it.id!=='doomsday');
+const ESS=ITEMS.filter(it=>it.star);
+const EXTRAS_ORDER=GROUPS.flatMap(g=>ITEMS.filter(it=>it.g===g.key));
+
+/* ================= CARTAZES GERADOS ================= */
+const STY={
+  vingadores:{a:'#26365e',b:'#0a0e1a',c:'#d8b24a',m:'burst'},
+  ferro:{a:'#9a1f1f',b:'#2a0707',c:'#f4c65a',m:'rings'},
+  cap:{a:'#23428a',b:'#0b1733',c:'#f1f1f1',c2:'#d0213a',m:'shield'},
+  thor:{a:'#2a3d5e',b:'#080d18',c:'#a8dcff',m:'bolt'},
+  hulk:{a:'#35682d',b:'#0e1c0b',c:'#c79cf0',m:'cracks'},
+  viuva:{a:'#26262c',b:'#050506',c:'#e0303a',m:'hourglass'},
+  aranha:{a:'#b5161f',b:'#1c2f6e',c:'#f5f5f5',m:'web'},
+  gotg:{a:'#6a2f96',b:'#c8561f',c:'#ffd166',m:'planet'},
+  formiga:{a:'#86161a',b:'#141418',c:'#d0d4da',m:'quantum'},
+  estranho:{a:'#154047',b:'#040c0f',c:'#ffa53a',m:'mandala'},
+  pantera:{a:'#34195a',b:'#07040d',c:'#bd98ff',m:'vibranium'},
+  capita:{a:'#1f3278',b:'#8f1d29',c:'#ffcf3a',m:'star'},
+  loki:{a:'#15462f',b:'#040e09',c:'#dcb541',m:'clock'},
+  wanda:{a:'#7a1120',b:'#170306',c:'#ff5a78',m:'hex'},
+  multiverso:{a:'#231c55',b:'#070514',c:'#7fe6d6',m:'orbits'},
+  xmen:{a:'#1f2f60',b:'#0a0e22',c:'#ffd23f',m:'xbars'},
+  wolverine:{a:'#4a3a12',b:'#0f0b04',c:'#ffd23f',m:'slash'},
+  quarteto:{a:'#2263b8',b:'#0a1d3f',c:'#ffffff',m:'four'},
+  thunder:{a:'#3d3d42',b:'#0e0e10',c:'#f2f2f2',m:'asterisk'},
+  netflix:{a:'#5e0d0d',b:'#0c0202',c:'#e8453c',m:'rain'},
+  shield:{a:'#223242',b:'#070b10',c:'#a9b6c3',m:'hexgrid'}
+};
+const OV={
+  shangchi:{a:'#8e1a1a',b:'#1a0606',c:'#f2c14e',m:'ten'},
+  eternos:{a:'#6b5214',b:'#0d0a03',c:'#ffe08a',m:'burst'},
+  gaviao:{a:'#4b2a78',b:'#0c0714',c:'#c9a7ff',m:'target'},
+  cavaleiro:{a:'#3a3f4a',b:'#07080b',c:'#e9ecf2',m:'moon'},
+  lobisomem:{a:'#3a3a3a',b:'#050505',c:'#e6e6e6',m:'moon'},
+  invasao:{a:'#1f4a2a',b:'#050d07',c:'#8fe39a',m:'hexgrid'},
+  wonderman:{a:'#7a5a12',b:'#130d02',c:'#ffd76a',m:'burst'},
+  zombies:{a:'#3d4a1a',b:'#0b0d05',c:'#b6d957',m:'cracks'},
+  blade1:{a:'#5a0a10',b:'#060203',c:'#d9d9d9',m:'slash'},
+  blade2:{a:'#4a0a1a',b:'#060203',c:'#d9d9d9',m:'slash'},
+  blade3:{a:'#5a1a0a',b:'#060203',c:'#d9d9d9',m:'slash'},
+  elektra:{a:'#7a0f1a',b:'#0d0204',c:'#ff5a5a',m:'slash'},
+  dp1:{a:'#9c1414',b:'#140404',c:'#ffffff',m:'eyes'},
+  dp2:{a:'#8a1030',b:'#140404',c:'#ffffff',m:'eyes'},
+  deadpool3:{a:'#9c1414',b:'#3a2a05',c:'#ffffff',m:'eyes'},
+  doomsday:{a:'#124a33',b:'#040a07',c:'#9fa8ad',c2:'#3fbf80',m:'mask'}
+};
+function hash(s){let h=2166136261;for(let k=0;k<s.length;k++){h^=s.charCodeAt(k);h=Math.imul(h,16777619)}return h>>>0}
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const f=n=>String(Math.round(n*10)/10);
+function polyPts(cx,cy,r,n,rot=-90){const p=[];for(let k=0;k<n;k++){const a=(rot+k*360/n)*Math.PI/180;p.push(f(cx+Math.cos(a)*r)+','+f(cy+Math.sin(a)*r))}return p.join(' ')}
+function starPts(cx,cy,R,r,n){const p=[];for(let k=0;k<n*2;k++){const a=(-90+k*180/n)*Math.PI/180,rr=k%2?r:R;p.push(f(cx+Math.cos(a)*rr)+','+f(cy+Math.sin(a)*rr))}return p.join(' ')}
+function halftone(C,R,op){const fx=40+R()*120,fy=60+R()*100;let s='';for(let y=6;y<300;y+=12)for(let x=6;x<200;x+=12){const r=Math.max(0,5.4-Math.hypot(x-fx,y-fy)/28);if(r>.3)s+=`<circle cx="${x}" cy="${y}" r="${f(r)}" fill="${C}" opacity="${op}"/>`}return s}
+function motif(st,seed){
+  const R=rng(seed),C=st.c,C2=st.c2||st.c,cx=100,cy=112;let s='';
+  switch(st.m){
+    case 'burst':{const o=R()*10;for(let k=0;k<36;k++){const a=(k*10+o)*Math.PI/180;s+=`<line x1="${f(cx+Math.cos(a)*30)}" y1="${f(cy+Math.sin(a)*30)}" x2="${f(cx+Math.cos(a)*240)}" y2="${f(cy+Math.sin(a)*240)}" stroke="${C}" stroke-width="${k%2?1:2.5}" opacity="${k%2?.22:.5}"/>`}s+=`<circle cx="${cx}" cy="${cy}" r="24" fill="none" stroke="${C}" stroke-width="3"/><circle cx="${cx}" cy="${cy}" r="9" fill="${C}"/>`;break}
+    case 'rings':{s+=`<circle cx="${cx}" cy="${cy}" r="76" fill="none" stroke="${C}" stroke-width="1.5" opacity=".3"/><circle cx="${cx}" cy="${cy}" r="58" fill="none" stroke="${C}" stroke-width="9" opacity=".75" stroke-dasharray="14 5" transform="rotate(${f(R()*30)} ${cx} ${cy})"/><circle cx="${cx}" cy="${cy}" r="42" fill="none" stroke="${C}" stroke-width="2" opacity=".55"/><circle cx="${cx}" cy="${cy}" r="27" fill="${C}"/><polygon points="${polyPts(cx,cy+2,16,3)}" fill="none" stroke="rgba(0,0,0,.45)" stroke-width="3"/>`;break}
+    case 'shield':{const ox=cx+(R()-.5)*20;s+=`<circle cx="${f(ox)}" cy="${cy}" r="76" fill="${C2}" opacity=".9"/><circle cx="${f(ox)}" cy="${cy}" r="60" fill="${C}" opacity=".92"/><circle cx="${f(ox)}" cy="${cy}" r="45" fill="${C2}" opacity=".9"/><circle cx="${f(ox)}" cy="${cy}" r="31" fill="${st.a}"/><polygon points="${starPts(ox,cy,28,11,5)}" fill="${C}"/>`;break}
+    case 'bolt':{for(let k=0;k<14;k++){const x=R()*280-40;s+=`<line x1="${f(x)}" y1="0" x2="${f(x-80)}" y2="300" stroke="${C}" stroke-width="1" opacity=".15"/>`}s+=`<polygon points="118,30 66,138 98,138 76,236 142,112 108,112 132,30" fill="${C}" opacity=".92"/>`;break}
+    case 'cracks':{for(let k=0;k<9;k++){let a=(k/9)*Math.PI*2+R()*.4,x=cx,y=cy,p=`M${cx} ${cy}`;for(let j=0;j<6;j++){a+=(R()-.5)*.9;x+=Math.cos(a)*22;y+=Math.sin(a)*22;p+=` L${f(x)} ${f(y)}`}s+=`<path d="${p}" fill="none" stroke="${C}" stroke-width="${f(3.2-k*.2)}" opacity=".75" stroke-linejoin="round"/>`}s+=`<circle cx="${cx}" cy="${cy}" r="16" fill="${C}"/>`;break}
+    case 'hourglass':{s+=`<circle cx="${cx}" cy="${cy}" r="72" fill="none" stroke="${C}" stroke-width="2" opacity=".35"/><polygon points="62,54 138,54 100,109" fill="${C}"/><polygon points="100,115 138,170 62,170" fill="${C}"/>`;break}
+    case 'web':{const N=12;for(let k=0;k<N;k++){const a=k/N*Math.PI*2;s+=`<line x1="${cx}" y1="${cy}" x2="${f(cx+Math.cos(a)*260)}" y2="${f(cy+Math.sin(a)*260)}" stroke="${C}" stroke-width="1.4" opacity=".5"/>`}for(let rr=22;rr<220;rr+=24){let p='';for(let k=0;k<=N;k++){const a=k/N*Math.PI*2,a2=(k-.5)/N*Math.PI*2;p+=k===0?`M${f(cx+Math.cos(a)*rr)} ${f(cy+Math.sin(a)*rr)}`:` Q${f(cx+Math.cos(a2)*rr*.9)} ${f(cy+Math.sin(a2)*rr*.9)} ${f(cx+Math.cos(a)*rr)} ${f(cy+Math.sin(a)*rr)}`}s+=`<path d="${p}" fill="none" stroke="${C}" stroke-width="1.2" opacity=".45"/>`}break}
+    case 'planet':{for(let k=0;k<28;k++)s+=`<circle cx="${f(R()*200)}" cy="${f(R()*190)}" r="${f(R()*1.4+.4)}" fill="#fff" opacity="${f(R()*.6+.2)}"/>`;s+=`<circle cx="112" cy="${cy}" r="56" fill="${C}" opacity=".92"/><ellipse cx="112" cy="${cy}" rx="96" ry="18" fill="none" stroke="#fff" stroke-width="3" opacity=".6" transform="rotate(-18 112 ${cy})"/>`;break}
+    case 'quantum':{[[70,82,52],[132,150,28],[160,190,15],[174,213,8],[182,226,4]].forEach(([x,y,r],k)=>s+=`<circle cx="${x}" cy="${y}" r="${r}" fill="${k===4?C:'none'}" stroke="${C}" stroke-width="${f(Math.max(1.2,r/9))}" opacity="${f(.9-k*.08)}"/>`);break}
+    case 'mandala':{const o=R()*15;for(let k=0;k<6;k++)s+=`<rect x="${cx-48}" y="${cy-48}" width="96" height="96" fill="none" stroke="${C}" stroke-width="1.6" opacity=".7" transform="rotate(${f(k*15+o)} ${cx} ${cy})"/>`;s+=`<circle cx="${cx}" cy="${cy}" r="76" fill="none" stroke="${C}" stroke-width="2" opacity=".5"/><circle cx="${cx}" cy="${cy}" r="86" fill="none" stroke="${C}" stroke-width="1" stroke-dasharray="2 4" opacity=".6"/><circle cx="${cx}" cy="${cy}" r="18" fill="${C}"/>`;break}
+    case 'vibranium':{for(let row=0;row<13;row++)for(let col=-1;col<9;col++){const x=col*26+(row%2?13:0),y=row*24;s+=`<polygon points="${x},${y+22} ${x+13},${y} ${x+26},${y+22}" fill="none" stroke="${C}" stroke-width=".8" opacity=".2"/>`}s+=`<polygon points="100,44 150,${cy} 100,180 50,${cy}" fill="none" stroke="${C}" stroke-width="3"/><polygon points="100,70 128,${cy} 100,154 72,${cy}" fill="${C}" opacity=".85"/>`;break}
+    case 'star':{s+=`<circle cx="${cx}" cy="${cy}" r="80" fill="none" stroke="${C}" stroke-width="1.5" opacity=".4"/><polygon points="${starPts(cx,cy,72,24,8)}" fill="${C}" opacity=".95" transform="rotate(${f(R()*22)} ${cx} ${cy})"/>`;break}
+    case 'clock':{s+=`<circle cx="${cx}" cy="${cy}" r="70" fill="none" stroke="${C}" stroke-width="3"/>`;for(let k=0;k<12;k++){const a=k/12*Math.PI*2;s+=`<line x1="${f(cx+Math.cos(a)*57)}" y1="${f(cy+Math.sin(a)*57)}" x2="${f(cx+Math.cos(a)*66)}" y2="${f(cy+Math.sin(a)*66)}" stroke="${C}" stroke-width="${k%3?2:4}"/>`}const h1=R()*6.28,h2=R()*6.28;s+=`<line x1="${cx}" y1="${cy}" x2="${f(cx+Math.cos(h1)*36)}" y2="${f(cy+Math.sin(h1)*36)}" stroke="${C}" stroke-width="5" stroke-linecap="round"/><line x1="${cx}" y1="${cy}" x2="${f(cx+Math.cos(h2)*52)}" y2="${f(cy+Math.sin(h2)*52)}" stroke="${C}" stroke-width="3" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="6" fill="${C}"/>`;break}
+    case 'hex':{for(let k=0;k<5;k++){const y=40+k*56;s+=`<path d="M-10 ${y} C 40 ${y-20}, 60 ${y+20}, 110 ${y} S 180 ${y-20}, 210 ${y}" fill="none" stroke="${C}" stroke-width="1.5" opacity=".3"/>`}[74,54,34].forEach((rr,k)=>s+=`<polygon points="${polyPts(cx,cy,rr,6,0)}" fill="${k===2?C:'none'}" stroke="${C}" stroke-width="${k===1?5:2}" opacity="${k===0?.5:.9}"/>`);break}
+    case 'orbits':{for(let k=0;k<8;k++){const ox=cx+(R()-.5)*60,oy=cy+(R()-.5)*60,rr=30+R()*60;s+=`<circle cx="${f(ox)}" cy="${f(oy)}" r="${f(rr)}" fill="none" stroke="${C}" stroke-width="${f(1+R()*2)}" opacity="${f(.3+R()*.5)}"/>`}s+=`<circle cx="${cx}" cy="${cy}" r="10" fill="${C}"/>`;break}
+    case 'xbars':{s+=halftone(C,R,.18)+`<rect x="${cx-15}" y="${cy-92}" width="30" height="184" rx="6" fill="${C}" transform="rotate(38 ${cx} ${cy})"/><rect x="${cx-15}" y="${cy-92}" width="30" height="184" rx="6" fill="${C}" opacity=".85" transform="rotate(-38 ${cx} ${cy})"/>`;break}
+    case 'slash':{const o=(R()-.5)*20;for(let k=0;k<3;k++){const x=78+k*26+o;s+=`<line x1="${f(x+40)}" y1="40" x2="${f(x-40)}" y2="200" stroke="${C}" stroke-width="7" stroke-linecap="round" opacity=".92"/>`}break}
+    case 'four':{s+=`<circle cx="${cx}" cy="${cy}" r="64" fill="none" stroke="${C}" stroke-width="7"/><text x="${cx}" y="${cy+38}" text-anchor="middle" font-family="Big Shoulders Display, Impact, sans-serif" font-weight="900" font-size="112" fill="${C}">4</text>`;break}
+    case 'asterisk':{for(let k=0;k<12;k++)s+=`<line x1="0" y1="${k*28}" x2="200" y2="${k*28-40}" stroke="${C}" stroke-width="1" opacity=".12"/>`;for(let k=0;k<3;k++)s+=`<rect x="${cx-8}" y="${cy-70}" width="16" height="140" rx="3" fill="${C}" transform="rotate(${k*60} ${cx} ${cy})"/>`;break}
+    case 'rain':{for(let k=0;k<70;k++){const x=R()*200,y=R()*300,l=14+R()*40;s+=`<line x1="${f(x)}" y1="${f(y)}" x2="${f(x-4)}" y2="${f(y+l)}" stroke="${C}" stroke-width="1" opacity="${f(.15+R()*.35)}"/>`}s+=`<rect x="0" y="${cy-4}" width="200" height="8" fill="${C}" opacity=".85"/>`;break}
+    case 'hexgrid':{for(let row=0;row<14;row++)for(let col=0;col<9;col++){const x=col*26+(row%2?13:0),y=row*22;s+=`<polygon points="${polyPts(x,y,12,6,30)}" fill="none" stroke="${C}" stroke-width=".8" opacity=".2"/>`}s+=`<polygon points="${polyPts(cx,cy,48,6,30)}" fill="none" stroke="${C}" stroke-width="5"/><polygon points="${polyPts(cx,cy,28,6,30)}" fill="${C}" opacity=".8"/>`;break}
+    case 'ten':{for(let k=0;k<10;k++){const a=k/10*Math.PI*2;s+=`<circle cx="${f(cx+Math.cos(a)*56)}" cy="${f(cy+Math.sin(a)*56)}" r="13" fill="none" stroke="${C}" stroke-width="4.5"/>`}s+=`<circle cx="${cx}" cy="${cy}" r="28" fill="${C}" opacity=".3"/>`;break}
+    case 'target':{[72,54,36,18].forEach((rr,k)=>s+=`<circle cx="${cx}" cy="${cy}" r="${rr}" fill="${k===3?C:'none'}" stroke="${C}" stroke-width="3" opacity="${f(.4+k*.18)}"/>`);s+=`<line x1="${cx}" y1="${cy}" x2="190" y2="20" stroke="${C}" stroke-width="3"/>`;break}
+    case 'moon':{for(let k=0;k<24;k++)s+=`<circle cx="${f(R()*200)}" cy="${f(R()*200)}" r="${f(R()*1.2+.3)}" fill="#fff" opacity="${f(R()*.5+.2)}"/>`;s+=`<path d="M125 50 A64 64 0 1 0 125 174 A50 50 0 1 1 125 50Z" fill="${C}" opacity=".95"/>`;break}
+    case 'eyes':{s+=`<circle cx="${cx}" cy="${cy}" r="68" fill="#0b0b0d"/><ellipse cx="${cx-26}" cy="${cy-4}" rx="20" ry="11" fill="${C}" transform="rotate(20 ${cx-26} ${cy-4})"/><ellipse cx="${cx+26}" cy="${cy-4}" rx="20" ry="11" fill="${C}" transform="rotate(-20 ${cx+26} ${cy-4})"/>`;break}
+    case 'mask':{s+=`<circle cx="${cx}" cy="${cy+6}" r="94" fill="${C2}" opacity=".22"/><rect x="58" y="48" width="84" height="134" rx="30" fill="${C}"/><rect x="68" y="92" width="26" height="8" rx="2" fill="#050807"/><rect x="106" y="92" width="26" height="8" rx="2" fill="#050807"/><line x1="${cx}" y1="102" x2="${cx}" y2="132" stroke="#050807" stroke-width="3" opacity=".5"/>`;for(let k=0;k<5;k++)s+=`<rect x="${83+k*8}" y="142" width="3" height="28" fill="#050807" opacity=".85"/>`;break}
+    default:{s+=halftone(C,R,.45)+`<circle cx="${cx}" cy="${cy}" r="40" fill="none" stroke="${C}" stroke-width="3" opacity=".7"/>`}
+  }
+  return s;
+}
+function styleOf(it){
+  if(OV[it.id]) return OV[it.id];
+  const k=it.fr[0];
+  if(STY[k]) return STY[k];
+  const h=hash(it.id)%360;
+  return {a:`hsl(${h} 45% 28%)`,b:`hsl(${h} 40% 6%)`,c:`hsl(${h} 80% 72%)`,m:'halftone'};
+}
+function splitTitle(t){
+  const s=t.match(/^(.*?)\s*\(T([^)]*)\)$/);
+  if(s){const n=s[2].replace(/T/g,'');return [(/ e | a /.test(n)?'Temporadas ':'Temporada ')+n,s[1]]}
+  const y=t.match(/^(.*?)\s*\((\d{4})\)$/);
+  if(y) return ['',y[1]];
+  const i=t.indexOf(':');
+  if(i>0) return [t.slice(0,i),t.slice(i+1).trim()];
+  return ['',t];
+}
+const PC={};
+function posterHTML(it){
+  if(PC[it.id]) return PC[it.id];
+  const st=styleOf(it),[kick,main]=splitTitle(it.t),L=main.length;
+  const sz=L<=9?'xl':L<=15?'l':L<=24?'m':'s';
+  const top=it.id==='doomsday'?'Nº 69 · 18 dez 2026':`${it.num?'Nº '+String(it.num).padStart(2,'0'):'Extra'} · ${it.k!=='f'?KIND[it.k]+' · ':''}${it.r.slice(0,4)}`;
+  return PC[it.id]=`<span class="poster" style="--pa:${st.a};--pb:${st.b}"><svg class="motif" viewBox="0 0 200 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">${motif(st,hash(it.id))}</svg><span class="p-top">${top}</span>${it.star?'<span class="p-ess">★ Essencial</span>':''}<span class="p-title">${kick?`<small>${esc(kick)}</small>`:''}<b class="${sz}">${esc(main)}</b></span></span>`;
+}
+
+/* ================= PESSOAS E DADOS DE EXEMPLO ================= */
+const BASE=[{id:'voce',name:'Você',color:'#0E8A94'},{id:'caio',name:'Caio',color:'#D1336F'},{id:'tercio',name:'Tércio',color:'#6366F1'},{id:'matheus',name:'Matheus',color:'#C27C0E'}];
+const PIDS=BASE.map(p=>p.id);
+const SWATCHES=['#0E8A94','#D1336F','#6366F1','#C27C0E','#2F9E5B','#C0392B','#8E44AD','#2D7FD3'];
+
+const BIAS={ultimato:3,guerrainf:3,cap2:2,ragnarok:2,aranha3:3,gotg1:2,guerracivil:2,vingadores:2,loki1:2,deadpool3:2,logan:3,x2:1,xdofp:2,pantera1:1,gotg3:2,sm2:2,wandavision:1,thunderbolts:1,dd1:1,
+  thor2:-3,hulk:-2,eternos:-2,thor4:-2,quantumania:-2,marvels:-2,xo:-3,xdp:-3,ff15:-4,novos:-2,eco:-1,invasao:-2,hdf2:-1,x3:-1,sm3:-1,asm2:-1};
+const PBIAS={voce:0,caio:.6,tercio:-.8,matheus:.3};
+const toStars=x=>Math.max(1,Math.min(5,Math.round(x/2)));
+function mockRating(pid,id){const h=hash(pid+':'+id);return toStars(7+(BIAS[id]||0)+PBIAS[pid]+(h%5)-2)}
+const SONY=['sm1','sm2','sm3','asm1','asm2'];
+function mockSeen(pid,it){
+  if(it.id==='doomsday') return false;
+  if(pid==='voce') return ['hdf1','vingadores','cap2','guerrainf','ultimato','sm1'].includes(it.id);
+  if(pid==='caio') return (it.e<=3&&it.k==='f')||(it.e===4&&it.star&&it.id!=='thunderbolts')||['wandavision','loki1','gotg3'].includes(it.id)||SONY.includes(it.id);
+  if(pid==='tercio') return it.e<=4?!['zombies','wonderman','ddr2','aranha4','olhos-wakanda','groot','shield35','defensores'].includes(it.id):(it.g==='xmen'||['sm1','sm2','asm1'].includes(it.id));
+  if(pid==='matheus') return (it.e<=2&&it.star)||['x1','x2','x3','logan','dp1','dp2','aranha3','deadpool3','gotg1'].includes(it.id);
+  return false;
+}
+const COMMENTS={
+  tercio:{ultimato:'Chorei no final. Sem vergonha nenhuma.',eternos:'Bonito, mas longo demais.',loki1:'Não pula: é a base do multiverso.',deadpool3:'Vê os X-Men antes que fica muito melhor.',thor2:'Pode pular sem medo.',wandavision:'Começa estranho, termina perfeito.',thunderbolts:'Surpreendeu. A Yelena carrega o filme.'},
+  caio:{ragnarok:'Melhor Thor disparado.',guerrainf:'O estalo me pegou desprevenido.',aranha3:'Os três juntos. Arrepiei.'},
+  matheus:{logan:'Nem parece filme de herói. Obra-prima.',cap2:'Melhor filme solo do MCU, fácil.',x2:'O melhor dos X-Men antigos.'}
+};
+const iso=t=>`${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
+function buildMock(){
+  const RANGE={voce:['2026-09-01','2026-09-23'],caio:['2026-05-02','2026-09-21'],tercio:['2026-02-10','2026-09-22'],matheus:['2026-07-12','2026-09-19']};
+  const marks={};
+  PIDS.forEach(pid=>{
+    marks[pid]={};
+    const seen=[...EXTRAS_ORDER,...ITEMS.filter(it=>it.e<=4)].filter(it=>mockSeen(pid,it));
+    const [a,b]=RANGE[pid].map(s=>new Date(s+'T12:00:00').getTime());
+    seen.forEach((it,k)=>{
+      const h=hash('n:'+pid+it.id);
+      marks[pid][it.id]={r:(pid==='tercio'&&it.k!=='f'&&h%6===0)?null:mockRating(pid,it.id),c:(COMMENTS[pid]||{})[it.id]||'',d:iso(new Date(a+(b-a)*(seen.length>1?k/(seen.length-1):1)))};
+    });
+  });
+  return {me:'voce',marks,prof:{}};
+}
+
+/* ================= ESTADO ================= */
+const KEY='maratona-doomsday-proto-v2',PREF='maratona-doomsday-prefs';
+let S=null;
+try{S=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){S=null}
+if(!S||!S.marks||!PIDS.includes(S.me)) S=buildMock();
+PIDS.forEach(pid=>{if(!S.marks[pid]) S.marks[pid]={}});
+if(!S.prof) S.prof={};
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+const TABS=['linha','ranking','perfil'];
+const UI={tab:'linha',type:'all',order:'crono',view:'h',hide:false,q:'',saga:null,metric:'main',profile:null,editing:false,editColor:null,modal:null,menu:false};
+try{const p=JSON.parse(localStorage.getItem(PREF)||'{}');if(p.view==='h'||p.view==='v')UI.view=p.view;if(p.order==='crono'||p.order==='lanc')UI.order=p.order}catch(e){}
+function savePrefs(){try{localStorage.setItem(PREF,JSON.stringify({view:UI.view,order:UI.order}))}catch(e){}}
+{const h=location.hash.slice(1);if(TABS.includes(h)) UI.tab=h}
+
+/* ================= UTILIDADES ================= */
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+const fmt=n=>n.toFixed(1).replace('.',',');
+const MESES=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+function fmtDate(d){const [y,m,dd]=d.split('-').map(Number);return `${dd} ${MESES[m-1]}`+(y!==new Date().getFullYear()?` ${y}`:'')}
+const hours=min=>Math.round(min/60);
+function dur(it){if(!it.m) return '';if(it.k!=='s') return it.m<60?`${it.m} min`:`${Math.floor(it.m/60)}h${String(it.m%60).padStart(2,'0')}`;return `≈ ${Math.round(it.m/60)}h`}
+function today(){const n=new Date();return new Date(n.getFullYear(),n.getMonth(),n.getDate())}
+const daysTo=(y,m,d)=>Math.round((new Date(y,m-1,d)-today())/86400000);
+function P(pid){const b=BASE.find(p=>p.id===pid);const o=S.prof[pid]||{};return {id:pid,name:o.name||b.name,color:o.color||b.color}}
+const av=(pid,size)=>{const p=P(pid);return `<span class="av ${size||''}" style="--pc:${p.color}" title="${esc(p.name)}" aria-hidden="true">${esc(p.name.trim()[0]||'?').toUpperCase()}</span>`};
+const starsHTML=(v,cls)=>`<span class="stars ${cls||''}" style="--v:${Math.round(v/5*100)}%" role="img" aria-label="${fmt(v)} de 5 estrelas"></span>`;
+const IC={
+  search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>',
+  rows:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="6" width="5" height="12" rx="1"/><rect x="9.5" y="6" width="5" height="12" rx="1"/><rect x="17" y="6" width="5" height="12" rx="1"/></svg>',
+  grid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>',
+  check:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  star:'<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z"/></svg>'
+};
+const RLBL=['','Não gostei','Mais ou menos','Bom','Muito bom','Obra-prima'];
+let toastT;
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,1900)}
+const reduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function stats(pid){
+  const m=S.marks[pid],ids=Object.keys(m).filter(id=>BYID[id]);
+  const rs=ids.map(id=>m[id].r).filter(r=>r!=null);
+  const dated=ids.filter(id=>m[id].d).sort((a,b)=>m[b].d.localeCompare(m[a].d)||BYID[b].i-BYID[a].i);
+  return {
+    seenMain:MAIN.filter(it=>m[it.id]).length,
+    seenEss:ESS.filter(it=>m[it.id]).length,
+    extras:ids.filter(id=>BYID[id].e===5).length,
+    seenAll:ids.length,
+    minutes:ids.reduce((a,id)=>a+(BYID[id].m||0),0),
+    avg:rs.length?rs.reduce((a,b)=>a+b,0)/rs.length:null,
+    rs,rated:rs.length,
+    comments:ids.filter(id=>m[id].c).length,
+    first:dated.length?m[dated[dated.length-1]].d:null,
+    last:dated[0]||null
+  };
+}
+function ranked(metric){const k={main:'seenMain',horas:'minutes',ess:'seenEss'}[metric];return PIDS.map(pid=>({pid,s:stats(pid)})).sort((a,b)=>b.s[k]-a.s[k]||b.s.seenAll-a.s.seenAll)}
+function crowd(it){const who=PIDS.filter(pid=>S.marks[pid][it.id]);const rs=who.map(pid=>S.marks[pid][it.id].r).filter(r=>r!=null);return {who,rs,avg:rs.length?rs.reduce((a,b)=>a+b,0)/rs.length:null}}
+function orderedMain(){const l=ITEMS.filter(it=>it.e<=4);return UI.order==='lanc'?l.slice().sort((a,b)=>a.r<b.r?-1:a.r>b.r?1:a.i-b.i):l}
+const orderedAll=()=>orderedMain().concat(EXTRAS_ORDER);
+function eraOf(it){if(it.e===5||UI.order==='crono') return it.e;return BUCKETS.findIndex(b=>it.r<=b.to)}
+function nextUp(){const m=S.marks[S.me];return orderedMain().find(it=>!m[it.id]&&!it.opt&&it.id!=='doomsday')}
+function passes(it){
+  const m=S.marks[S.me],q=UI.q.trim();
+  if(UI.type==='star'&&!it.star) return false;
+  if(UI.type==='film'&&it.k==='s') return false;
+  if(UI.type==='series'&&it.k!=='s') return false;
+  if(UI.saga&&!it.fr.includes(UI.saga)) return false;
+  if(UI.hide&&m[it.id]) return false;
+  if(q&&!norm(it.t).includes(norm(q))) return false;
+  return true;
+}
+
+/* ================= BARRA ================= */
+function renderBar(){
+  document.querySelectorAll('.tabs a').forEach(a=>{if(a.dataset.tab===UI.tab)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
+  const me=P(S.me);
+  document.getElementById('me').innerHTML=`<button class="me-btn" data-menu aria-expanded="${UI.menu}" aria-haspopup="true">${av(S.me,'md')}<span class="nm">${esc(me.name)}</span><span class="caret">▾</span></button>${UI.menu?`<div class="me-menu"><span class="lbl">Entrar como</span>${PIDS.map(pid=>`<button data-person="${pid}" aria-pressed="${pid===S.me}">${av(pid,'md')}${esc(P(pid).name)}</button>`).join('')}<p>No site de verdade cada um entra com a própria conta. Aqui você troca de perfil pra testar.</p></div>`:''}`;
+}
+
+/* ================= LINHA DO TEMPO ================= */
+function cardHTML(it){
+  const mine=S.marks[S.me][it.id],fin=it.id==='doomsday',c=crowd(it);
+  return `<article class="card${mine?' seen':''}" data-id="${it.id}">
+    <span class="dot" aria-hidden="true"></span>
+    <div class="p-wrap">
+      <button class="p-open" data-open="${it.id}" aria-label="Abrir ${esc(it.t)}">${posterHTML(it)}</button>
+      ${fin?'':`<button class="c-check" data-toggle="${it.id}" data-fk="t-${it.id}" aria-pressed="${!!mine}" title="${mine?'Visto. Clique pra desmarcar':'Marcar como visto'}" aria-label="${mine?'Desmarcar':'Marcar'} ${esc(it.t)} como visto">${IC.check}</button>`}
+    </div>
+    <div class="c-info">
+      <h3 class="c-t"><button data-open="${it.id}" tabindex="-1">${esc(it.t)}</button></h3>
+      <div class="c-meta">${KIND[it.k]} · ${it.r.slice(0,4)}${it.m?' · '+dur(it):''}</div>
+      <div class="c-foot">${fin?'<span class="c-soon">Estreia 18/12</span>':c.avg!=null?`<span class="c-avg" title="Média da turma"><i>★</i>${fmt(c.avg)}</span>`:'<span class="c-none">Sem notas</span>'}<span class="stack">${c.who.map(pid=>av(pid,'sm')).join('')}</span></div>
+    </div>
+  </article>`;
+}
+const arrows=k=>`<div class="arrows"><button data-scroll="-1" data-rail-btn="${k}" aria-label="Voltar">‹</button><button data-scroll="1" data-rail-btn="${k}" aria-label="Avançar">›</button></div>`;
+const container=(k,vis)=>`<div class="${UI.view==='h'?'rail':'grid'}" data-rail="${k}">${vis.map(cardHTML).join('')}</div>`;
+function eraHead(era,name,all,railKey){
+  const m=S.marks[S.me],tot=all.filter(it=>it.id!=='doomsday'),seen=tot.filter(it=>m[it.id]).length;
+  return `<div class="era-head"><span class="gem" aria-hidden="true"></span><div><h2 class="era-name">${esc(name)}</h2><span class="era-stone">${era.stone}</span></div><div class="era-prog"><span>${seen}/${tot.length} vistos</span><span class="mini"><i style="width:${tot.length?seen/tot.length*100:0}%"></i></span></div>${railKey&&UI.view==='h'?arrows(railKey):''}</div>`;
+}
+function erasHTML(){
+  const main=orderedMain(),labels=UI.order==='crono'?ERAS.slice(0,5).map(e=>e.name):BUCKETS.map(b=>b.name);
+  let html='';
+  labels.forEach((name,idx)=>{
+    const all=main.filter(it=>eraOf(it)===idx),vis=all.filter(passes);
+    if(!vis.length) return;
+    const era=ERAS[idx];
+    html+=`<section class="era" style="--c:var(--${era.key})">${eraHead(era,name,all,era.key)}${container(era.key,vis)}</section>`;
+  });
+  const subs=GROUPS.map(g=>{const all=ITEMS.filter(it=>it.g===g.key);return {g,vis:all.filter(passes)}}).filter(x=>x.vis.length);
+  if(subs.length){
+    const era=ERAS[5];
+    html+=`<section class="era" style="--c:var(--${era.key})">${eraHead(era,era.name,ITEMS.filter(it=>it.e===5),null)}<p class="era-note">Fora da linha do tempo principal. Não contam no placar da linha principal, mas os X-Men essenciais contam nos essenciais.</p>${subs.map(x=>`<div class="sub-head"><b>${esc(x.g.name)}</b><span>${esc(x.g.hint)}</span>${UI.view==='h'?arrows('alma-'+x.g.key):''}</div>${container('alma-'+x.g.key,x.vis)}`).join('')}</section>`;
+  }
+  return html||'<div class="empty"><b>Nada encontrado.</b><br>Tente outra busca ou <button class="linkish" data-clear>limpe os filtros</button>.</div>';
+}
+function heroHTML(){
+  const d=daysTo(2026,12,18),enc=daysTo(2026,9,25);
+  const big=d>1?`${d}<small>dias</small>`:d===1?'1<small>dia</small>':d===0?'Hoje':'Já';
+  const sub=d>=0?'para Vingadores: Doomsday · 18/12/2026':'Vingadores: Doomsday está em cartaz';
+  const encTxt=enc>1?`Ultimato volta aos cinemas em ${enc} dias (25/09) como Endgame Encore.`:enc===1?'Ultimato volta aos cinemas amanhã (25/09) como Endgame Encore.':enc===0?'Endgame Encore estreia hoje nos cinemas.':'Endgame Encore está nos cinemas.';
+  const st=stats(S.me),m=S.marks[S.me];
+  const segs=ERAS.slice(0,5).map((e,idx)=>{const all=ITEMS.filter(it=>it.e===idx&&it.id!=='doomsday'),k=all.filter(it=>m[it.id]).length;return `<span style="--c:var(--${e.key});flex:${all.length}" title="${esc(e.name)}: ${k}/${all.length}"><i style="width:${k/all.length*100}%"></i></span>`}).join('');
+  const legend=ERAS.slice(0,5).map(e=>`<span style="--c:var(--${e.key})"><i></i>${esc(e.name)}</span>`).join('');
+  const nx=nextUp();
+  return `<div class="tile h-count"><span class="lbl">Contagem regressiva</span><div class="big">${big}</div><div class="sub">${sub}</div><div class="enc">${encTxt}</div></div>
+  <div class="tile h-prog"><span class="lbl">${S.me==='voce'?'Seu progresso':'Progresso de '+esc(P(S.me).name)} na linha principal</span><div class="num">${st.seenMain}<span> / ${MAIN.length}</span></div><div class="segbar">${segs}</div><div class="seg-legend">${legend}</div><div class="h-sub"><span>Essenciais <b>${st.seenEss}/${ESS.length}</b></span><span>Horas assistidas <b>${hours(st.minutes)}h</b></span><span>Extras <b>${st.extras}</b></span></div></div>
+  <div class="tile h-next">${nx?`<button data-open="${nx.id}" aria-label="Abrir ${esc(nx.t)}">${posterHTML(nx)}</button><div><span class="lbl">Continue de onde parou</span><h3>${esc(nx.t)}</h3><div class="meta">Nº ${nx.num} ${UI.order==='crono'?'na ordem cronológica':'na linha do tempo'} · ${KIND[nx.k]} · ${nx.r.slice(0,4)}${nx.m?' · '+dur(nx):''}</div><div class="row-btns"><button class="btn primary" data-toggle="${nx.id}">✓ Já vi</button><button class="btn" data-open="${nx.id}">Ver detalhes</button></div></div>`:'<div style="grid-column:1/-1"><span class="lbl">Linha principal completa</span><h3>Agora é esperar Doomsday.</h3></div>'}</div>`;
+}
+function toolsHTML(){
+  const counts={};ITEMS.forEach(it=>it.fr.forEach(x=>counts[x]=(counts[x]||0)+1));
+  return `<div class="tools">
+    <div class="tools-row">
+      <label class="search">${IC.search}<input id="q" type="search" placeholder="Buscar título…" aria-label="Buscar título" autocomplete="off"></label>
+      <div class="seg" data-seg="type" role="group" aria-label="Mostrar"><button data-v="all">Tudo</button><button data-v="star">Essenciais</button><button data-v="film">Filmes</button><button data-v="series">Séries</button></div>
+      <div class="seg" data-seg="order" role="group" aria-label="Ordem"><button data-v="crono">Cronológica</button><button data-v="lanc">Lançamento</button></div>
+      <div class="seg" data-seg="view" role="group" aria-label="Visualização"><button data-v="h">${IC.rows}Horizontal</button><button data-v="v">${IC.grid}Vertical</button></div>
+      <label class="chk"><input id="hide" type="checkbox"> Esconder o que já vi</label>
+    </div>
+    <div class="sagas" role="group" aria-label="Filtrar por saga"><button data-saga-chip="">Todas as sagas</button>${SAGAS.map(([k,l])=>`<button data-saga-chip="${k}">${esc(l)} <span>${counts[k]||0}</span></button>`).join('')}</div>
+  </div>`;
+}
+function resultHTML(){
+  const vis=ITEMS.filter(passes).length,active=UI.type!=='all'||UI.hide||UI.q.trim()||UI.saga;
+  return `<span>${vis} ${vis===1?'título':'títulos'}${UI.saga?` na saga <b>${esc(SAGA[UI.saga])}</b>`:''}</span>${active?'<button class="btn ghost sm" data-clear>Limpar filtros</button>':''}`;
+}
+function syncTools(){
+  document.querySelectorAll('[data-seg]').forEach(g=>{const k=g.dataset.seg;g.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(UI[k]===b.dataset.v)))});
+  document.querySelectorAll('[data-saga-chip]').forEach(b=>b.setAttribute('aria-pressed',String((UI.saga||'')===b.dataset.sagaChip)));
+  const h=document.getElementById('hide');if(h) h.checked=UI.hide;
+  const q=document.getElementById('q');if(q&&q.value!==UI.q) q.value=UI.q;
+}
+function updateLinha(){
+  const pos={};document.querySelectorAll('.rail[data-rail]').forEach(r=>pos[r.dataset.rail]=r.scrollLeft);
+  document.getElementById('hero').innerHTML=heroHTML();
+  document.getElementById('result').innerHTML=resultHTML();
+  document.getElementById('eras').innerHTML=erasHTML();
+  document.querySelectorAll('.rail[data-rail]').forEach(r=>{if(pos[r.dataset.rail]) r.scrollLeft=pos[r.dataset.rail]});
+  syncTools();
+}
+
+/* ================= RANKING ================= */
+function rankingHTML(){
+  const R=ranked(UI.metric);
+  const val=s=>UI.metric==='main'?`${s.seenMain}<small> /${MAIN.length}</small>`:UI.metric==='horas'?`${hours(s.minutes)}<small> h</small>`:`${s.seenEss}<small> /${ESS.length}</small>`;
+  const medals=['#F5C04A','#C5CBD6','#D08A4E'];
+  const podium=[1,0,2].filter(i=>R[i]).map(i=>{const {pid,s}=R[i];return `<div class="pod r${i+1}" style="--mc:${medals[i]}"><button data-profile="${pid}" aria-label="Ver perfil de ${esc(P(pid).name)}">${av(pid,i===0?'xl':'lg')}</button><div class="pn">${esc(P(pid).name)}${pid===S.me?'<span class="you">você</span>':''}</div><div class="pv">${val(s)}</div><div class="blk" aria-hidden="true">${i+1}º</div></div>`}).join('');
+  const rows=R.map(({pid,s},i)=>{const last=s.last?BYID[s.last]:null,p=P(pid);return `<tr${pid===S.me?' class="me-row"':''}><td class="pos">${i+1}º</td><td><div class="who-cell">${av(pid,'md')}<button data-profile="${pid}">${esc(p.name)}</button>${pid===S.me?'<span class="you">você</span>':''}</div></td><td class="${UI.metric==='main'?'hl':''}"><span class="tbar" style="--pc:${p.color}"><i style="width:${s.seenMain/MAIN.length*100}%"></i></span>${s.seenMain}/${MAIN.length}</td><td class="${UI.metric==='ess'?'hl':''}">${s.seenEss}/${ESS.length}</td><td class="${UI.metric==='horas'?'hl':''}">${hours(s.minutes)} h</td><td>${s.extras}</td><td>${s.avg!=null?`${starsHTML(s.avg)} ${fmt(s.avg)}`:'–'}</td><td>${last?`<button class="linkish" data-open="${last.id}">${esc(last.t)}</button>`:'–'}</td></tr>`}).join('');
+  const withCrowd=ITEMS.map(it=>({it,c:crowd(it)}));
+  const favs=withCrowd.filter(x=>x.c.rs.length>=2).sort((a,b)=>b.c.avg-a.c.avg||b.c.rs.length-a.c.rs.length||a.it.i-b.it.i).slice(0,10);
+  const favHTML=favs.map((x,k)=>`<button class="fav" data-open="${x.it.id}"><div class="p-wrap">${posterHTML(x.it)}<span class="rk" aria-hidden="true">${k+1}</span></div><div class="ft">${esc(x.it.t)}</div><div class="fm">${starsHTML(x.c.avg)} ${fmt(x.c.avg)}</div></button>`).join('');
+  const div=withCrowd.filter(x=>x.c.rs.length>=3).map(x=>({...x,sp:Math.max(...x.c.rs)-Math.min(...x.c.rs)})).filter(x=>x.sp>=2).sort((a,b)=>b.sp-a.sp||a.it.i-b.it.i).slice(0,6);
+  const divHTML=div.map(x=>`<button class="div-card" data-open="${x.it.id}">${posterHTML(x.it)}<div><div class="dt">${esc(x.it.t)}</div><ul>${x.c.who.filter(pid=>S.marks[pid][x.it.id].r!=null).map(pid=>`<li>${av(pid,'sm')}<span>${esc(P(pid).name)}</span>${starsHTML(S.marks[pid][x.it.id].r)}</li>`).join('')}</ul></div></button>`).join('');
+  return `<div class="page-head"><div><h1>Ranking</h1><p>Quem está mais perto de chegar pronto em Doomsday. Clique em alguém pra ver o perfil.</p></div><div class="seg" data-seg="metric" role="group" aria-label="Ordenar por">${[['main','Linha principal'],['ess','Essenciais'],['horas','Horas']].map(([v,l])=>`<button data-v="${v}" aria-pressed="${UI.metric===v}">${l}</button>`).join('')}</div></div>
+  <div class="podium">${podium}</div>
+  <div class="table-wrap"><table><thead><tr><th>#</th><th>Pessoa</th><th>Linha principal</th><th>Essenciais</th><th>Horas</th><th>Extras</th><th>Média</th><th>Último visto</th></tr></thead><tbody>${rows}</tbody></table></div>
+  <section class="section"><h2>Favoritos da turma</h2><p>Melhor média de estrelas entre títulos com pelo menos 2 notas.</p>${favHTML?`<div class="favs">${favHTML}</div>`:'<p class="muted">Ainda não tem notas suficientes.</p>'}</section>
+  ${divHTML?`<section class="section"><h2>Dividiu opiniões</h2><p>Onde a turma mais discordou.</p><div class="split">${divHTML}</div></section>`:''}`;
+}
+
+/* ================= PERFIL ================= */
+const miniCard=(it,r)=>`<button class="mini-card" data-open="${it.id}">${posterHTML(it)}<div class="mt">${esc(it.t)}</div>${r!=null?starsHTML(r):''}</button>`;
+function perfilHTML(){
+  const pid=UI.profile&&PIDS.includes(UI.profile)?UI.profile:S.me;
+  const p=P(pid),s=stats(pid),isMe=pid===S.me,m=S.marks[pid];
+  const pos=ranked('main').findIndex(x=>x.pid===pid)+1;
+  const d=Math.max(0,daysTo(2026,12,18));
+  const miss=ESS.filter(it=>!m[it.id]);
+  const perWeek=d>0?miss.length/(d/7):miss.length;
+  const missMin=miss.reduce((a,it)=>a+(it.m||0),0);
+  const quem=isMe?'você':esc(p.name);
+  const eras=ERAS.map((e,idx)=>{const all=ITEMS.filter(it=>it.e===idx&&it.id!=='doomsday'),k=all.filter(it=>m[it.id]).length;return `<div class="er" style="--c:var(--${e.key})"><span>${esc(e.name)}</span><span class="n">${k}/${all.length}</span><span class="bar"><i style="width:${k/all.length*100}%"></i></span></div>`}).join('');
+  const cnt=[0,1,2,3,4,5].map(v=>s.rs.filter(r=>r===v).length),mx=Math.max(1,...cnt);
+  const hist=[5,4,3,2,1].map(v=>`<div class="hr">${starsHTML(v)}<span class="hb"><i style="width:${cnt[v]/mx*100}%"></i></span><span class="n">${cnt[v]}</span></div>`).join('');
+  const ids=Object.keys(m).filter(id=>BYID[id]);
+  const favs=ids.filter(id=>m[id].r!=null).sort((a,b)=>m[b].r-m[a].r||(m[b].d||'').localeCompare(m[a].d||'')).slice(0,10).map(id=>miniCard(BYID[id],m[id].r)).join('');
+  const recent=ids.sort((a,b)=>(m[b].d||'').localeCompare(m[a].d||'')||BYID[b].i-BYID[a].i).slice(0,8).map(id=>{const it=BYID[id],x=m[id];return `<li><button data-open="${id}">${posterHTML(it)}<span><span class="rt">${esc(it.t)}</span><span class="rd">${x.d?fmtDate(x.d):''}${x.c?` · “${esc(x.c)}”`:''}</span></span>${x.r!=null?starsHTML(x.r):'<span class="rd">sem nota</span>'}</button></li>`}).join('');
+  const edit=isMe&&UI.editing?`<form class="edit" id="editForm"><div><label class="lbl" for="pf-name">Nome</label><input type="text" id="pf-name" maxlength="20" value="${esc(p.name)}" required></div><div><span class="lbl">Cor do perfil</span><div class="swatches" role="group" aria-label="Cor do perfil">${SWATCHES.map(c=>`<button type="button" data-sw="${c}" style="--sw:${c}" aria-pressed="${c===UI.editColor}" aria-label="Cor ${c}"></button>`).join('')}</div></div><div class="row-btns"><button class="btn primary" type="submit">Salvar</button><button class="btn" type="button" data-edit>Cancelar</button></div><p class="muted" style="margin:0;font-size:12.5px">No site de verdade isso fica salvo na sua conta.</p></form>`:'';
+  return `<div class="pf-pick"><span class="lbl">Ver perfil de</span>${PIDS.map(x=>`<button data-profile="${x}" aria-pressed="${x===pid}">${av(x,'sm')}${esc(P(x).name)}${x===S.me&&P(x).name!=='Você'?' (você)':''}</button>`).join('')}</div>
+  <div class="pf-head" style="--pc:${p.color}">${av(pid,'xl')}<div><span class="lbl">${isMe?'Seu perfil':'Perfil'}</span><h1>${esc(p.name)}</h1><div class="pf-sub">${pos}º no ranking · na maratona desde ${s.first?fmtDate(s.first):'hoje'} · ${s.comments} comentário${s.comments===1?'':'s'}</div></div><div class="pf-actions">${isMe?`<button class="btn" data-edit>${UI.editing?'Fechar edição':'Editar perfil'}</button>`:`<button class="btn" data-profile="${S.me}">Ver meu perfil</button>`}</div></div>
+  ${edit}
+  <div class="tiles">
+    <div class="tile stat"><span class="lbl">Linha principal</span><div class="v">${s.seenMain}<small>/${MAIN.length}</small></div><div class="d">${Math.round(s.seenMain/MAIN.length*100)}% da linha do tempo</div></div>
+    <div class="tile stat"><span class="lbl">Essenciais</span><div class="v">${s.seenEss}<small>/${ESS.length}</small></div><div class="d">${miss.length?`Faltam ${miss.length}`:'Todos vistos'}</div></div>
+    <div class="tile stat"><span class="lbl">Horas assistidas</span><div class="v">${hours(s.minutes)}<small>h</small></div><div class="d">≈ ${fmt(s.minutes/60/24)} dias sem parar</div></div>
+    <div class="tile stat"><span class="lbl">Média das notas</span><div class="v">${s.avg!=null?fmt(s.avg):'–'}<small>★</small></div><div class="d">${s.rated} títulos avaliados</div></div>
+    <div class="tile stat"><span class="lbl">Extras</span><div class="v">${s.extras}</div><div class="d">X-Men, Aranhas antigos e cia.</div></div>
+  </div>
+  <div class="pf-cols">
+    <div class="tile"><span class="lbl">Progresso por era</span><div class="eras-list">${eras}</div><div class="pace">${miss.length?`<b>${fmt(perWeek)}</b> essenciais por semana é o ritmo pra ${quem} ver os ${miss.length} que faltam (≈ ${hours(missMin)}h) até 18/12.`:'<b>Pronto</b> pra Doomsday: todos os essenciais vistos.'}</div></div>
+    <div class="tile"><span class="lbl">Como ${isMe?'você avalia':esc(p.name)+' avalia'}</span><div class="hist">${hist}</div></div>
+  </div>
+  <section class="section"><h2>Favoritos</h2><p>As notas mais altas ${isMe?'que você deu':'de '+esc(p.name)}.</p>${favs?`<div class="minis">${favs}</div>`:'<p class="muted">Nenhuma nota ainda.</p>'}</section>
+  <section class="section"><h2>Vistos recentemente</h2>${recent?`<ul class="recent">${recent}</ul>`:'<p class="muted">Nada marcado ainda.</p>'}</section>
+  <section class="section"><h2>Essenciais que faltam</h2><p>${miss.length} ${miss.length===1?'título':'títulos'} pra chegar pronto em Doomsday.</p>${miss.length?`<div class="minis">${miss.map(it=>miniCard(it,null)).join('')}</div>`:'<p class="muted">Nenhum. Pronto pra estreia!</p>'}</section>`;
+}
+
+/* ================= DETALHE ================= */
+let lastFocusId=null;
+function modalHTML(it){
+  const mine=S.marks[S.me][it.id],fin=it.id==='doomsday',c=crowd(it),era=ERAS[it.e],st=styleOf(it);
+  const seq=orderedAll(),ix=seq.findIndex(x=>x.id===it.id),prev=seq[ix-1],next=seq[ix+1];
+  const group=it.g?GROUPS.find(g=>g.key===it.g):null;
+  const others=PIDS.filter(pid=>pid!==S.me).map(pid=>{const x=S.marks[pid][it.id];return `<li>${av(pid,'md')}<div><span class="fn">${esc(P(pid).name)}</span><div class="fs">${x?(x.r!=null?`${starsHTML(x.r)} ${RLBL[x.r]}`:'viu, sem nota')+(x.d?` · ${fmtDate(x.d)}`:''):'ainda não viu'}</div></div>${x&&x.c?`<q>${esc(x.c)}</q>`:''}</li>`}).join('');
+  const rate=[5,4,3,2,1].map(v=>`<button data-rate="${v}" data-fk="r${v}" class="${mine&&mine.r>=v?'on':''}" aria-label="${v} estrela${v>1?'s':''}: ${RLBL[v]}" aria-pressed="${!!mine&&mine.r===v}">${IC.star}</button>`).join('');
+  const d=daysTo(2026,12,18);
+  const mineSec=fin?`<div class="m-doom"><span class="lbl" style="color:#9fd6bb">Estreia</span><div style="font-family:var(--display);font-weight:900;font-size:44px;line-height:.9;color:var(--doom)">${d>0?d+' dias':'Em cartaz'}</div><p style="margin:8px 0 0">18 de dezembro de 2026. Dá pra marcar e avaliar depois da estreia.</p></div>`:
+  `<section class="m-sec"><h3>Sua avaliação${S.me!=='voce'?` <span>· como ${esc(P(S.me).name)}</span>`:''}</h3>
+    <div class="mine-row"><button class="btn ${mine?'on':''}" data-toggle="${it.id}" data-fk="tog">${mine?'✓ Visto':'Marcar como visto'}</button><div class="srate" role="group" aria-label="Sua nota">${rate}</div><span class="rate-lbl">${mine&&mine.r?RLBL[mine.r]:'Toque nas estrelas'}</span></div>
+    ${mine&&mine.d?`<div class="m-when">Visto em ${fmtDate(mine.d)}${mine?'. Clique em “Visto” pra desmarcar.':''}</div>`:''}
+    <label for="m-c" class="lbl" style="margin-top:18px">Comentário</label>
+    <textarea id="m-c" maxlength="140" placeholder="O que achou? (opcional)">${esc(mine?mine.c:'')}</textarea>
+    <button class="btn" data-save-c="${it.id}" data-fk="save">Salvar comentário</button></section>`;
+  return `<div class="m-back" data-close></div>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="m-title" style="--pa:${st.a};--pb:${st.b}">
+    <div class="m-glow" aria-hidden="true"></div>
+    <button class="m-x" data-close data-fk="close" aria-label="Fechar">✕</button>
+    <div class="m-grid">
+      <div class="m-left">${posterHTML(it)}<div class="m-order">${it.num?`Nº ${it.num} de ${CRONO_TOTAL} na ordem cronológica`:'Fora da linha do tempo principal'}</div></div>
+      <div class="m-right">
+        <div class="m-era" style="--c:var(--${era.key})"><span class="gem" aria-hidden="true"></span>${esc(group?group.name:era.name)} · ${era.stone}</div>
+        <h2 id="m-title">${esc(it.t)}</h2>
+        <div class="m-meta">${KIND[it.k]} · lançado em ${it.r.slice(0,4)}${it.m?' · '+dur(it)+(it.k==='s'?' no total':''):''}${it.n?` · ${esc(it.n)}`:''}${group?` · ${esc(group.hint)}`:''}</div>
+        <div class="m-tags">${it.star?'<span class="pill">★ Essencial pra Doomsday</span>':''}${it.opt?'<span class="pill opt">Opcional</span>':''}${it.fr.map(x=>`<button class="tag" data-saga="${x}" title="Ver só ${esc(SAGA[x])}">${esc(SAGA[x])}</button>`).join('')}</div>
+        <div class="m-crowd">${c.avg!=null?`<b>${fmt(c.avg)}</b>${starsHTML(c.avg,'lg')}<span class="muted">média da turma · ${c.who.length} de ${PIDS.length} já viram</span>`:fin?'<span class="muted">Ninguém viu ainda: estreia em 18/12.</span>':`<span class="muted">${c.who.length?`${c.who.length} de ${PIDS.length} já viram, ninguém deu nota ainda.`:'Ninguém da turma viu ainda. Seja o primeiro.'}</span>`}</div>
+        ${mineSec}
+        <section class="m-sec"><h3>A turma</h3><ul class="friends">${others}</ul></section>
+        <div class="m-nav">${prev?`<button data-open="${prev.id}" data-fk="prev"><span>‹ Anterior</span><b>${esc(prev.t)}</b></button>`:''}${next?`<button class="nx" data-open="${next.id}" data-fk="next"><span>Próximo ›</span><b>${esc(next.t)}</b></button>`:''}</div>
+      </div>
+    </div>
+  </div>`;
+}
+function renderModal(keepScroll){
+  const el=document.getElementById('modal'),it=BYID[UI.modal];if(!it) return;
+  const old=el.querySelector('.sheet'),sc=old?old.scrollTop:0;
+  el.innerHTML=modalHTML(it);
+  if(keepScroll) el.querySelector('.sheet').scrollTop=sc;
+}
+function openModal(id){
+  if(!UI.modal) lastFocusId=id;
+  UI.modal=id;UI.menu=false;
+  renderModal(false);
+  const el=document.getElementById('modal');el.hidden=false;
+  document.documentElement.style.overflow='hidden';
+  el.querySelector('.m-x').focus({preventScroll:true});
+}
+function closeModal(){
+  const id=lastFocusId;
+  UI.modal=null;const el=document.getElementById('modal');el.hidden=true;el.innerHTML='';
+  document.documentElement.style.overflow='';
+  const back=id&&(document.querySelector(`.p-open[data-open="${id}"]`)||document.querySelector(`[data-open="${id}"]`));
+  if(back) back.focus({preventScroll:true});
+}
+
+/* ================= RENDER GERAL ================= */
+function renderView(){
+  const v=document.getElementById('view');
+  if(UI.tab==='linha'){v.innerHTML=`<div id="hero" class="hero"></div>${toolsHTML()}<div id="result" class="result"></div><div id="eras"></div>`;updateLinha()}
+  else if(UI.tab==='ranking') v.innerHTML=rankingHTML();
+  else v.innerHTML=perfilHTML();
+}
+function refresh(){
+  const a=document.activeElement,fk=a&&a.dataset?a.dataset.fk:null;
+  renderBar();
+  if(UI.tab==='linha'&&document.getElementById('eras')) updateLinha(); else renderView();
+  if(UI.modal) renderModal(true);
+  if(fk){const el=document.querySelector(`[data-fk="${fk}"]`);if(el) el.focus({preventScroll:true})}
+}
+function go(tab){
+  UI.tab=tab;UI.menu=false;if(tab!=='perfil') UI.editing=false;
+  renderBar();renderView();window.scrollTo(0,0);
+  try{history.replaceState(null,'','#'+tab)}catch(e){}
+}
+
+/* ================= AÇÕES ================= */
+function setMark(id,patch){
+  const m=S.marks[S.me];
+  if(patch===null) delete m[id];
+  else m[id]=Object.assign({r:null,c:'',d:iso(new Date())},m[id]||{},patch);
+  save();refresh();
+}
+function toggleSeen(id){
+  const it=BYID[id];if(!it||id==='doomsday') return;
+  const was=!!S.marks[S.me][id];
+  setMark(id,was?null:{});
+  toast(was?`Desmarcado: ${it.t}`:`Visto: ${it.t}`);
+}
+function rate(id,v){
+  const cur=S.marks[S.me][id],nv=cur&&cur.r===v?null:v;
+  setMark(id,{r:nv});
+  toast(nv?`${nv} estrela${nv>1?'s':''} · ${RLBL[nv]}`:'Nota removida');
+}
+
+document.addEventListener('click',e=>{
+  const t=e.target,q=s=>t.closest(s);let el;
+  if(UI.menu&&!q('.me')){UI.menu=false;renderBar()}
+  if(q('[data-close]')){closeModal();return}
+  if(el=q('[data-saga-chip]')){UI.saga=el.dataset.sagaChip||null;updateLinha();return}
+  if(el=q('[data-saga]')){UI.saga=el.dataset.saga;UI.type='all';UI.hide=false;UI.q='';closeModal();if(UI.tab!=='linha') go('linha'); else updateLinha();const tl=document.querySelector('.tools');if(tl) tl.scrollIntoView({block:'start',behavior:reduced()?'auto':'smooth'});toast(`Mostrando só ${SAGA[UI.saga]}`);return}
+  if(el=q('[data-seg] button')){const k=el.closest('[data-seg]').dataset.seg;UI[k]=el.dataset.v;if(k==='order'||k==='view') savePrefs();if(UI.tab==='linha') updateLinha(); else renderView();return}
+  if(el=q('[data-toggle]')){toggleSeen(el.dataset.toggle);return}
+  if(el=q('[data-rate]')){rate(UI.modal,+el.dataset.rate);return}
+  if(el=q('[data-save-c]')){const ta=document.getElementById('m-c');setMark(el.dataset.saveC,{c:ta.value.trim()});toast(ta.value.trim()?'Comentário salvo':'Comentário apagado');return}
+  if(el=q('[data-open]')){e.preventDefault();openModal(el.dataset.open);return}
+  if(el=q('[data-profile]')){UI.profile=el.dataset.profile;UI.editing=false;go('perfil');return}
+  if(el=q('[data-person]')){S.me=el.dataset.person;UI.menu=false;UI.profile=null;UI.editing=false;save();refresh();toast(`Agora você está como ${P(S.me).name}`);return}
+  if(q('[data-menu]')){UI.menu=!UI.menu;renderBar();return}
+  if(q('[data-edit]')){UI.editing=!UI.editing;UI.editColor=P(S.me).color;renderView();if(UI.editing){const i=document.getElementById('pf-name');if(i) i.focus()}return}
+  if(el=q('[data-sw]')){UI.editColor=el.dataset.sw;document.querySelectorAll('[data-sw]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.sw===UI.editColor)));return}
+  if(el=q('[data-scroll]')){const r=document.querySelector(`.rail[data-rail="${el.dataset.railBtn}"]`);if(r) r.scrollBy({left:(+el.dataset.scroll)*r.clientWidth*.85,behavior:reduced()?'auto':'smooth'});return}
+  if(q('[data-clear]')){UI.type='all';UI.hide=false;UI.q='';UI.saga=null;updateLinha();return}
+  if(el=q('[data-tab]')){e.preventDefault();go(el.dataset.tab);return}
+});
+document.addEventListener('input',e=>{if(e.target.id==='q'){UI.q=e.target.value;updateLinha()}});
+document.addEventListener('change',e=>{if(e.target.id==='hide'){UI.hide=e.target.checked;updateLinha()}});
+document.addEventListener('submit',e=>{
+  if(e.target.id!=='editForm') return;
+  e.preventDefault();
+  const name=document.getElementById('pf-name').value.trim().slice(0,20);
+  if(!name){toast('Escreva um nome');return}
+  S.prof[S.me]={name,color:UI.editColor||P(S.me).color};
+  UI.editing=false;save();refresh();toast('Perfil atualizado');
+});
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Escape') return;
+  if(UI.modal){closeModal();return}
+  if(UI.menu){UI.menu=false;renderBar()}
+});
+window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(TABS.includes(h)&&h!==UI.tab) go(h)});
+
+renderBar();renderView();
+})();
+</script>

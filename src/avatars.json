@@ -1,0 +1,222 @@
+[
+  {
+    "id": "homem-aranha-ferro",
+    "name": "Aranha de Ferro",
+    "group": "heroi"
+  },
+  {
+    "id": "capitao-america",
+    "name": "Capitão América",
+    "group": "heroi"
+  },
+  {
+    "id": "capitao-america-2",
+    "name": "Capitão América 2",
+    "group": "heroi"
+  },
+  {
+    "id": "ciclope",
+    "name": "Ciclope",
+    "group": "heroi"
+  },
+  {
+    "id": "deadpool",
+    "name": "Deadpool",
+    "group": "heroi"
+  },
+  {
+    "id": "deadpool-2",
+    "name": "Deadpool 2",
+    "group": "heroi"
+  },
+  {
+    "id": "demolidor",
+    "name": "Demolidor",
+    "group": "heroi"
+  },
+  {
+    "id": "doutor-estranho",
+    "name": "Doutor Estranho",
+    "group": "heroi"
+  },
+  {
+    "id": "doutor-estranho-2",
+    "name": "Doutor Estranho 2",
+    "group": "heroi"
+  },
+  {
+    "id": "drax",
+    "name": "Drax",
+    "group": "heroi"
+  },
+  {
+    "id": "falcao",
+    "name": "Falcão",
+    "group": "heroi"
+  },
+  {
+    "id": "gaviao-arqueiro",
+    "name": "Gavião Arqueiro",
+    "group": "heroi"
+  },
+  {
+    "id": "gaviao-arqueiro-2",
+    "name": "Gavião Arqueiro 2",
+    "group": "heroi"
+  },
+  {
+    "id": "groot",
+    "name": "Groot",
+    "group": "heroi"
+  },
+  {
+    "id": "homem-de-ferro",
+    "name": "Homem de Ferro",
+    "group": "heroi"
+  },
+  {
+    "id": "homem-de-ferro-2",
+    "name": "Homem de Ferro 2",
+    "group": "heroi"
+  },
+  {
+    "id": "homem-aranha",
+    "name": "Homem-Aranha",
+    "group": "heroi"
+  },
+  {
+    "id": "homem-aranha-2",
+    "name": "Homem-Aranha 2",
+    "group": "heroi"
+  },
+  {
+    "id": "homem-aranha-3",
+    "name": "Homem-Aranha 3",
+    "group": "heroi"
+  },
+  {
+    "id": "homem-aranha-superior",
+    "name": "Homem-Aranha Superior",
+    "group": "heroi"
+  },
+  {
+    "id": "homem-formiga",
+    "name": "Homem-Formiga",
+    "group": "heroi"
+  },
+  {
+    "id": "hulk",
+    "name": "Hulk",
+    "group": "heroi"
+  },
+  {
+    "id": "hulk-2",
+    "name": "Hulk 2",
+    "group": "heroi"
+  },
+  {
+    "id": "pantera-negra",
+    "name": "Pantera Negra",
+    "group": "heroi"
+  },
+  {
+    "id": "pantera-negra-2",
+    "name": "Pantera Negra 2",
+    "group": "heroi"
+  },
+  {
+    "id": "rocket",
+    "name": "Rocket",
+    "group": "heroi"
+  },
+  {
+    "id": "rocket-2",
+    "name": "Rocket 2",
+    "group": "heroi"
+  },
+  {
+    "id": "senhor-das-estrelas",
+    "name": "Senhor das Estrelas",
+    "group": "heroi"
+  },
+  {
+    "id": "shang-chi",
+    "name": "Shang-Chi",
+    "group": "heroi"
+  },
+  {
+    "id": "soldado-invernal",
+    "name": "Soldado Invernal",
+    "group": "heroi"
+  },
+  {
+    "id": "thor",
+    "name": "Thor",
+    "group": "heroi"
+  },
+  {
+    "id": "thor-2",
+    "name": "Thor 2",
+    "group": "heroi"
+  },
+  {
+    "id": "tony-stark",
+    "name": "Tony Stark",
+    "group": "heroi"
+  },
+  {
+    "id": "wolverine",
+    "name": "Wolverine",
+    "group": "heroi"
+  },
+  {
+    "id": "wolverine-2",
+    "name": "Wolverine 2",
+    "group": "heroi"
+  },
+  {
+    "id": "wolverine-3",
+    "name": "Wolverine 3",
+    "group": "heroi"
+  },
+  {
+    "id": "caveira-vermelha",
+    "name": "Caveira Vermelha",
+    "group": "vilao"
+  },
+  {
+    "id": "doutor-destino",
+    "name": "Doutor Destino",
+    "group": "vilao"
+  },
+  {
+    "id": "duende-verde",
+    "name": "Duende Verde",
+    "group": "vilao"
+  },
+  {
+    "id": "loki",
+    "name": "Loki",
+    "group": "vilao"
+  },
+  {
+    "id": "magneto",
+    "name": "Magneto",
+    "group": "vilao"
+  },
+  {
+    "id": "thanos",
+    "name": "Thanos",
+    "group": "vilao"
+  },
+  {
+    "id": "ultron",
+    "name": "Ultron",
+    "group": "vilao"
+  },
+  {
+    "id": "venom",
+    "name": "Venom",
+    "group": "vilao"
+  }
+]

@@ -1,0 +1,47 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Chaves (nunca vão pro Git)
+.env
+.env.*
+!.env.example
+!.env.demo
+
+.vercel
+.env*
+
+# Mantém os modelos de configuração
+!.env.example
+!.env.demo
+
+# Imagens originais dos avatares (ficam só na máquina)
+avatares/*
+!avatares/lista.json
+
+.claude/
+
+# Caches do HyperFrames
+videos/*/.thumbnails/
+videos/*/.hyperframes/
