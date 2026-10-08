@@ -1,5 +1,13 @@
 # Moviegram
 
+<p>
+<img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript">
+<img src="https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white" alt="Vite">
+<img src="https://img.shields.io/badge/Supabase-3FCF8E?style=flat-square&logo=supabase&logoColor=white" alt="Supabase">
+<a href="LICENSE"><img src="https://img.shields.io/badge/licen%C3%A7a-MIT-8b949e?style=flat-square" alt="Licença MIT"></a>
+<a href="https://moviegram-chi.vercel.app"><img src="https://img.shields.io/badge/site-no_ar-e5484d?style=flat-square&logo=vercel&logoColor=white" alt="Site no ar"></a>
+</p>
+
 A linha do tempo inteira da Marvel com a sua turma: cada um marca o que já viu, dá de 1 a 5 estrelas, comenta e acompanha quem chega mais pronto em **Vingadores: Doomsday (18/12/2026)**.
 
 - **Linha do tempo**: ordem cronológica ou de lançamento, em fileiras (horizontal) ou grade (vertical), com filtro por saga.
@@ -80,5 +88,9 @@ As imagens ficam na pasta `avatares/`. Pra acrescentar uma:
 | `supabase/schema.sql` | Tabelas e regras de segurança |
 | `scripts/fetch-posters.mjs` | Busca os cartazes no TMDB |
 | `prototipo/index.html` | O protótipo original |
+
+## Licença
+
+Código sob a licença [MIT](LICENSE). Personagens, imagens e marcas da Marvel pertencem aos seus donos e não são cobertos por ela.
 
 Cartazes: [TMDB](https://www.themoviedb.org/). Este produto usa a API do TMDB, mas não é endossado nem certificado pelo TMDB.
