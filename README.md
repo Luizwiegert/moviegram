@@ -36,7 +36,7 @@ Abre em http://localhost:5173. **Sem o arquivo `.env.local`, o app roda em modo 
 ### 1. Supabase
 1. Crie um projeto em [supabase.com](https://supabase.com) (plano grátis).
 2. Vá em **SQL Editor > New query**, cole todo o conteúdo de [`supabase/schema.sql`](supabase/schema.sql) e clique em **Run**.
-   - Antes de rodar, troque `'DOOMSDAY'` pelo **código de convite** que você vai passar pra turma. Só quem tiver o código consegue criar conta.
+   - O cadastro é aberto. Pra fechar por convite, guarde um código: `update app_private.settings set invite_code = 'SEU-CODIGO' where id;`
 3. Vá em **Authentication > Sign In / Providers > Email** e desligue **Confirm email** (assim ninguém precisa confirmar e-mail pra entrar).
 4. Em **Authentication > URL Configuration**, coloque o endereço do site (ex.: `https://moviegram.vercel.app`) em **Site URL**. Enquanto testa, deixe `http://localhost:5173` também em **Redirect URLs**.
 5. Em **Project Settings > API**, copie a **URL do projeto** e a chave **publishable/anon**.
@@ -65,7 +65,7 @@ As imagens ficam na pasta `avatares/`. Pra acrescentar uma:
 1. Suba a pasta pro GitHub.
 2. Na Vercel, **Add New > Project**, importe o repositório (ela detecta Vite sozinha).
 3. Em **Environment Variables**, adicione `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY`.
-4. **Deploy**. Mande o link e o código de convite pra turma.
+4. **Deploy**. Mande o link pra turma.
 
 ## Estrutura
 
@@ -77,7 +77,7 @@ As imagens ficam na pasta `avatares/`. Pra acrescentar uma:
 | `src/backend-live.ts` | Supabase: carrega, salva e atualiza ao vivo |
 | `src/backend-demo.ts` | Modo demonstração (sem Supabase) |
 | `src/posters.ts` | Cartazes: oficiais do TMDB ou ilustração gerada |
-| `supabase/schema.sql` | Tabelas, segurança e código de convite |
+| `supabase/schema.sql` | Tabelas e regras de segurança |
 | `scripts/fetch-posters.mjs` | Busca os cartazes no TMDB |
 | `prototipo/index.html` | O protótipo original |
 
